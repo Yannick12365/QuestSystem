@@ -1,4 +1,4 @@
-package me.yl.questsystem.manager;
+package me.yl.questsystem.npc;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -13,6 +13,7 @@ import net.minecraft.network.syncher.DataWatcher;
 import net.minecraft.network.syncher.DataWatcherObject;
 import net.minecraft.network.syncher.DataWatcherRegistry;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.server.level.WorldServer;
 import net.minecraft.server.network.PlayerConnection;
@@ -29,34 +30,36 @@ import java.net.URL;
 import java.util.*;
 
 public class NPCManager {
-    private static final List<NPCManager> NPC = new ArrayList<>();
-    private EntityPlayer npc;
-    private GameProfile gameProfile;
-    private WorldServer world;
-    private MinecraftServer server;
-    private String name;
+    private static final List<NPC> NPC = new ArrayList<>();
 
+    public List<NPC> getNPClist(){
+        return NPC;
+    }
 
     public void createNPC(Player p, String n) {
         boolean exist = false;
-        for (NPCManager existNPC : NPC) {
-            if (existNPC.name.equalsIgnoreCase(n) || n.equalsIgnoreCase("NPCList")) {
+
+        for (NPC existNPC : NPC) {
+            if (existNPC.getName(existNPC).equalsIgnoreCase(n) || n.equalsIgnoreCase("NPCList")) {
                 exist = true;
             }
         }
         if (exist == false) {
-            this.name = n;
-            this.server = ((CraftServer) Bukkit.getServer()).getServer();
-            this.world = ((CraftWorld) Objects.requireNonNull(Bukkit.getWorld(p.getWorld().getName()))).getHandle();
-            this.gameProfile = new GameProfile(UUID.randomUUID(), n);
+            String name = n;
 
-            this.npc = new EntityPlayer(this.server, world, gameProfile, null);
-            this.npc.b(p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
+            DedicatedServer server = ((CraftServer) Bukkit.getServer()).getServer();
 
-            sentNPCPacket(this.npc);
+            WorldServer world = ((CraftWorld) Objects.requireNonNull(Bukkit.getWorld(p.getWorld().getName()))).getHandle();
+            GameProfile gameProfile = new GameProfile(UUID.randomUUID(), n);
 
-            NPC.add(this);
-            new ConfigManager().writeNPCconfig(this, new String[]{"create","create"});
+            EntityPlayer entityPlayer = new EntityPlayer(server, world, gameProfile, null);
+            entityPlayer.b(p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
+
+            NPC npc = new NPC(entityPlayer, gameProfile, world, server, name);
+
+            sentNPCPacket(npc.getEntityplayer(npc));
+            NPC.add(npc);
+            new NPCConfigManager().writeNPCconfig(npc, new String[]{"create","create"});
         } else {
             p.sendMessage("Ein NPC mit diesem Namen existiert schon!");
         }
@@ -75,14 +78,14 @@ public class NPCManager {
     }
 
     public void sentJoinPacket(Player player) {
-        for (NPCManager npc : NPC) {
+        for (NPC npc : NPC) {
             PlayerConnection connection = ((CraftPlayer) player).getHandle().b;
-            connection.a(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.a, npc.npc));
-            connection.a(new PacketPlayOutNamedEntitySpawn(npc.npc));
+            connection.a(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.a, npc.getEntityplayer(npc)));
+            connection.a(new PacketPlayOutNamedEntitySpawn(npc.getEntityplayer(npc)));
 
-            fixSkin(connection, npc.npc);
+            fixSkin(connection, npc.getEntityplayer(npc));
 
-            removeTablist(connection, npc.npc);
+            removeTablist(connection, npc.getEntityplayer(npc));
         }
     }
 
@@ -111,12 +114,12 @@ public class NPCManager {
 
     public void removeNPC(Player p, String n) {
         EntityPlayer entityPlayer = null;
-        NPCManager existNPC2 = null;
+        NPC existNPC2 = null;
 
-        for (NPCManager existNPC : NPC) {
-            if (existNPC.name.equalsIgnoreCase(n)) {
+        for (NPC existNPC : NPC) {
+            if (existNPC.getName(existNPC).equalsIgnoreCase(n)) {
                 existNPC2 = existNPC;
-                entityPlayer = existNPC.npc;
+                entityPlayer = existNPC.getEntityplayer(existNPC);
             }
         }
 
@@ -126,18 +129,18 @@ public class NPCManager {
                 connection.a(new PacketPlayOutEntityDestroy(entityPlayer.getBukkitEntity().getEntityId()));
             }
             NPC.remove(existNPC2);
-            new ConfigManager().deleteNPCInconfig(n);
+            new NPCConfigManager().deleteNPCInconfig(n);
         } else {
             p.sendMessage("Ein NPC mit diesem Namen existiert schon!");
         }
     }
 
     public void tpNPC(Player p, String n) {
-        for (NPCManager existNPC : NPC) {
-            if (existNPC.name.equalsIgnoreCase(n)) {
-                existNPC.npc.b(p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
-                sentNPCPacket(existNPC.npc);
-                new ConfigManager().writeNPCconfig(existNPC,new String[]{"tp","tp"});
+        for (NPC existNPC : NPC) {
+            if (existNPC.getName(existNPC).equalsIgnoreCase(n)) {
+                existNPC.getEntityplayer(existNPC).b(p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
+                sentNPCPacket(existNPC.getEntityplayer(existNPC));
+                new NPCConfigManager().writeNPCconfig(existNPC,new String[]{"tp","tp"});
                 return;
             }
         }
@@ -145,15 +148,15 @@ public class NPCManager {
     }
 
     public void changeNPCSkin(Player p, String n, String skin) {
-        for (NPCManager existNPC : NPC) {
-            if (existNPC.name.equalsIgnoreCase(n)) {
+        for (NPC existNPC : NPC) {
+            if (existNPC.getName(existNPC).equalsIgnoreCase(n)) {
                 String[] npcSkin = getSkin(p, skin);
-                existNPC.gameProfile.getProperties().clear();
+                existNPC.getGameProfile(existNPC).getProperties().clear();
                 if (!(npcSkin[0].equalsIgnoreCase("") && npcSkin[0].equalsIgnoreCase(""))) {
-                    existNPC.gameProfile.getProperties().put("textures", new Property("textures", npcSkin[0], npcSkin[1]));
+                    existNPC.getGameProfile(existNPC).getProperties().put("textures", new Property("textures", npcSkin[0], npcSkin[1]));
                 }
-                sentNPCPacket(existNPC.npc);
-                new ConfigManager().writeNPCconfig(existNPC, npcSkin);
+                sentNPCPacket(existNPC.getEntityplayer(existNPC));
+                new NPCConfigManager().writeNPCconfig(existNPC, npcSkin);
 
                 return;
             }
@@ -181,33 +184,21 @@ public class NPCManager {
 
     public void createAfterRestart(Map<String,String > npcData){
         Location location = new Location(Bukkit.getWorld(npcData.get("World")), Double.parseDouble(npcData.get("X")), Double.parseDouble(npcData.get("Y")), Double.parseDouble(npcData.get("Z")), Float.parseFloat(npcData.get("Yaw")), Float.parseFloat(npcData.get("Pitch")));
-        this.name = npcData.get("Name");
-        this.server = ((CraftServer) Bukkit.getServer()).getServer();
-        this.world = ((CraftWorld) location.getWorld()).getHandle();
-        this.gameProfile = new GameProfile(UUID.fromString(npcData.get("UUID")), npcData.get("Name"));
+        String name = npcData.get("Name");
+        DedicatedServer server = ((CraftServer) Bukkit.getServer()).getServer();
+        WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
+        GameProfile gameProfile = new GameProfile(UUID.fromString(npcData.get("UUID")), npcData.get("Name"));
 
-        this.npc = new EntityPlayer(this.server, world, gameProfile, null);
-        this.npc.b(Double.parseDouble(npcData.get("X")), Double.parseDouble(npcData.get("Y")), Double.parseDouble(npcData.get("Z")), Float.parseFloat(npcData.get("Yaw")), Float.parseFloat(npcData.get("Pitch")));
+        EntityPlayer entityPlayer = new EntityPlayer(server, world, gameProfile, null);
+        entityPlayer.b(Double.parseDouble(npcData.get("X")), Double.parseDouble(npcData.get("Y")), Double.parseDouble(npcData.get("Z")), Float.parseFloat(npcData.get("Yaw")), Float.parseFloat(npcData.get("Pitch")));
+
+        NPC npc = new NPC(entityPlayer, gameProfile, world, server, name);
 
         if (!(npcData.get("SkinValue") == "create" && (npcData.get("SkinSignature")) == "create") || !(npcData.get("SkinValue") == "tp" && (npcData.get("SkinSignature")) == "tp")) {
-            this.gameProfile.getProperties().put("textures", new Property("textures", npcData.get("SkinValue"), npcData.get("SkinSignature")));
+            npc.getGameProfile(npc).getProperties().put("textures", new Property("textures", npcData.get("SkinValue"), npcData.get("SkinSignature")));
         }
-        NPC.add(this);
+        NPC.add(npc);
     }
 
-    public String getName(NPCManager npcUtil){
-        return npcUtil.name;
-    }
-    public WorldServer getWorld(NPCManager npcUtil){
-        return npcUtil.world;
-    }
-    public GameProfile getGameProfile(NPCManager npcUtil){
-        return npcUtil.gameProfile;
-    }
-    public EntityPlayer getEntityplayer(NPCManager npcUtil){
-        return npcUtil.npc;
-    }
-    public List<NPCManager> getNPClist(){
-        return NPC;
-    }
+
 }

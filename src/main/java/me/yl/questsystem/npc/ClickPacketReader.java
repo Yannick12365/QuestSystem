@@ -1,4 +1,4 @@
-package me.yl.questsystem.manager;
+package me.yl.questsystem.npc;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -13,8 +13,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 public class ClickPacketReader {
-    Player player;
-    Channel channel;
+    private Player player;
+    private Channel channel;
 
     public ClickPacketReader(Player player) {
         this.player = player;
@@ -31,6 +31,7 @@ public class ClickPacketReader {
     }
 
     public void uninject(){
+
         if(channel.pipeline().get("PacketInjector") != null){
             channel.pipeline().remove("PacketInjector");
         }
@@ -40,8 +41,8 @@ public class ClickPacketReader {
         if(packet.getClass().getSimpleName().equalsIgnoreCase("PacketPlayInUseEntity")){
             int id = (Integer)getValue(packet, "a");
 
-            NPCManager npcFound = null;
-            for(NPCManager npc:new NPCManager().getNPClist()){
+            NPC npcFound = null;
+            for(NPC npc:new NPCManager().getNPClist()){
                 if (npc.getEntityplayer(npc).ae() == id){
                     npcFound = npc;
                 }
@@ -59,12 +60,6 @@ public class ClickPacketReader {
                         counter++;
                     }
                 }.runTaskTimer(mainPlugin, 0, 1);
-                /*
-                if(getValue(packet, "action").toString().equalsIgnoreCase("ATTACK")){
-                    return;
-                }else if(getValue(packet, "action").toString().equalsIgnoreCase("INTERACT")){
-                    player.openInventory(player.getEnderChest());
-                }*/
             }
 
         }

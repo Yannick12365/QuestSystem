@@ -1,6 +1,7 @@
-package me.yl.questsystem.manager;
+package me.yl.questsystem.npc;
 
 import me.yl.questsystem.main;
+import me.yl.questsystem.npc.NPCManager;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ConfigManager {
+public class NPCConfigManager {
     public static File npcFile;
     public static FileConfiguration npcFileconf;
 
@@ -25,39 +26,39 @@ public class ConfigManager {
         npcFileconf = YamlConfiguration.loadConfiguration(npcFile);
     }
 
-    public void writeNPCconfig(NPCManager npcutil, String[] skin){
+    public void writeNPCconfig(NPC npc, String[] skin){
         ArrayList<String> npcStringList = new ArrayList<>();
         if(npcFileconf.contains("NPCList")){
-            if (!(npcFileconf.getStringList("NPCList").contains(npcutil.getName(npcutil)))) {
+            if (!(npcFileconf.getStringList("NPCList").contains(npc.getName(npc)))) {
                 npcStringList = (ArrayList<String>) npcFileconf.getStringList("NPCList");
-                npcStringList.add(npcutil.getName(npcutil));
+                npcStringList.add(npc.getName(npc));
                 npcFileconf.set("NPCList", npcStringList);
             }
         }else{
-            npcStringList.add(npcutil.getName(npcutil));
+            npcStringList.add(npc.getName(npc));
             npcFileconf.set("NPCList", npcStringList);
         }
 
         if (skin[0] == "create" && skin[0] == "create") {
-            npcFileconf.set(npcutil.getName(npcutil)+".Name",npcutil.getName(npcutil));
-            npcFileconf.set(npcutil.getName(npcutil)+".X",Double.toString(npcutil.getEntityplayer(npcutil).getBukkitEntity().getLocation().getX()));
-            npcFileconf.set(npcutil.getName(npcutil)+".Y",Double.toString(npcutil.getEntityplayer(npcutil).getBukkitEntity().getLocation().getY()));
-            npcFileconf.set(npcutil.getName(npcutil)+".Z",Double.toString(npcutil.getEntityplayer(npcutil).getBukkitEntity().getLocation().getZ()));
-            npcFileconf.set(npcutil.getName(npcutil)+".Yaw",Double.toString(npcutil.getEntityplayer(npcutil).getBukkitEntity().getLocation().getYaw()));
-            npcFileconf.set(npcutil.getName(npcutil)+".Pitch",Double.toString(npcutil.getEntityplayer(npcutil).getBukkitEntity().getLocation().getPitch()));
-            npcFileconf.set(npcutil.getName(npcutil)+".UUID",npcutil.getGameProfile(npcutil).getId().toString());
-            npcFileconf.set(npcutil.getName(npcutil)+".World",npcutil.getWorld(npcutil).getWorld().getName());
-            npcFileconf.set(npcutil.getName(npcutil) + ".SkinValue", "Kein Skin");
-            npcFileconf.set(npcutil.getName(npcutil) + ".SkinSignature", "Kein Skin");
+            npcFileconf.set(npc.getName(npc)+".Name",npc.getName(npc));
+            npcFileconf.set(npc.getName(npc)+".X",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getX()));
+            npcFileconf.set(npc.getName(npc)+".Y",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getY()));
+            npcFileconf.set(npc.getName(npc)+".Z",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getZ()));
+            npcFileconf.set(npc.getName(npc)+".Yaw",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getYaw()));
+            npcFileconf.set(npc.getName(npc)+".Pitch",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getPitch()));
+            npcFileconf.set(npc.getName(npc)+".UUID",npc.getGameProfile(npc).getId().toString());
+            npcFileconf.set(npc.getName(npc)+".World",npc.getWorld(npc).getWorld().getName());
+            npcFileconf.set(npc.getName(npc) + ".SkinValue", "Kein Skin");
+            npcFileconf.set(npc.getName(npc) + ".SkinSignature", "Kein Skin");
         }else if(skin[0] == "tp" && skin[0] == "tp"){
-            npcFileconf.set(npcutil.getName(npcutil)+".X",Double.toString(npcutil.getEntityplayer(npcutil).getBukkitEntity().getLocation().getX()));
-            npcFileconf.set(npcutil.getName(npcutil)+".Y",Double.toString(npcutil.getEntityplayer(npcutil).getBukkitEntity().getLocation().getY()));
-            npcFileconf.set(npcutil.getName(npcutil)+".Z",Double.toString(npcutil.getEntityplayer(npcutil).getBukkitEntity().getLocation().getZ()));
-            npcFileconf.set(npcutil.getName(npcutil)+".Yaw",Double.toString(npcutil.getEntityplayer(npcutil).getBukkitEntity().getLocation().getYaw()));
-            npcFileconf.set(npcutil.getName(npcutil)+".Pitch",Double.toString(npcutil.getEntityplayer(npcutil).getBukkitEntity().getLocation().getPitch()));
+            npcFileconf.set(npc.getName(npc)+".X",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getX()));
+            npcFileconf.set(npc.getName(npc)+".Y",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getY()));
+            npcFileconf.set(npc.getName(npc)+".Z",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getZ()));
+            npcFileconf.set(npc.getName(npc)+".Yaw",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getYaw()));
+            npcFileconf.set(npc.getName(npc)+".Pitch",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getPitch()));
         } else {
-            npcFileconf.set(npcutil.getName(npcutil) + ".SkinValue", skin[0]);
-            npcFileconf.set(npcutil.getName(npcutil) + ".SkinSignature", skin[1]);
+            npcFileconf.set(npc.getName(npc) + ".SkinValue", skin[0]);
+            npcFileconf.set(npc.getName(npc) + ".SkinSignature", skin[1]);
         }
 
         try {
