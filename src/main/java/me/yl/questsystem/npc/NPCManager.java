@@ -1,10 +1,12 @@
-package me.yl.questsystem.manager;
+package me.yl.questsystem.npc;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import me.yl.questsystem.main;
+import me.yl.questsystem.quest.Quest;
+import me.yl.questsystem.quest.QuestManager;
 import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
 import net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata;
 import net.minecraft.network.protocol.game.PacketPlayOutNamedEntitySpawn;
@@ -52,7 +54,7 @@ public class NPCManager {
 
             this.npc = new EntityPlayer(this.server, world, gameProfile, null);
             this.npc.b(p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
-
+            new QuestManager().getQuestList().put(this, new ArrayList<Quest>());
             sentNPCPacket(this.npc);
 
             NPC.add(this);

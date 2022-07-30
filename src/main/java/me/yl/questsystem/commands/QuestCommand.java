@@ -2,7 +2,7 @@ package me.yl.questsystem.commands;
 
 import me.yl.questsystem.manager.ChatManager;
 
-import me.yl.questsystem.manager.NPCManager;
+import me.yl.questsystem.npc.NPCManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

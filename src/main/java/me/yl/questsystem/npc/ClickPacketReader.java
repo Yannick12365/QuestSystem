@@ -1,9 +1,10 @@
-package me.yl.questsystem.manager;
+package me.yl.questsystem.npc;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import me.yl.questsystem.main;
+import me.yl.questsystem.npc.NPCManager;
 import net.minecraft.network.protocol.Packet;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;

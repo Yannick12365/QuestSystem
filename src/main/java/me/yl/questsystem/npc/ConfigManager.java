@@ -1,6 +1,7 @@
-package me.yl.questsystem.manager;
+package me.yl.questsystem.npc;
 
 import me.yl.questsystem.main;
+import me.yl.questsystem.npc.NPCManager;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
