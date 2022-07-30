@@ -1,6 +1,6 @@
 package me.yl.questsystem.quest;
 
-import me.yl.questsystem.npc.NPCManager;
+import me.yl.questsystem.npc.NPC;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -9,11 +9,11 @@ public class Quest {
     private ItemStack item;
     private int itemAmount;
     private double reward;
-    private NPCManager npc;
+    private NPC npc;
     private int questID;
     private Player creator;
 
-    public Quest(ItemStack item, int itemAmount, double reward, NPCManager npc, Player creator, QuestManager qm){
+    public Quest(ItemStack item, int itemAmount, double reward, NPC npc, Player creator, QuestManager qm){
 
         this.item = item;
         this.itemAmount = itemAmount;
@@ -48,11 +48,11 @@ public class Quest {
         this.reward = reward;
     }
 
-    public NPCManager getNpc() {
+    public NPC getNpc() {
         return npc;
     }
 
-    public void setNpc(NPCManager npc) {
+    public void setNpc(NPC npc) {
         this.npc = npc;
     }
 
