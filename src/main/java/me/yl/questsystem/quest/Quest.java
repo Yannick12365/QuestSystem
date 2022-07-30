@@ -1,7 +1,6 @@
 package me.yl.questsystem.quest;
 
 import me.yl.questsystem.npc.NPCManager;
-import me.yl.questsystem.quest.QuestManager;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
