@@ -1,6 +1,6 @@
 package me.yl.questsystem;
 
-import me.yl.questsystem.commands.Quest;
+import me.yl.questsystem.commands.QuestCommand;
 import me.yl.questsystem.listener.PlayerJoin;
 import me.yl.questsystem.listener.PlayerQuit;
 import me.yl.questsystem.manager.ClickPacketReader;
@@ -14,7 +14,7 @@ public final class main extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        getCommand("Quest").setExecutor(new Quest());
+        getCommand("Quest").setExecutor(new QuestCommand());
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerQuit(), this);
 
