@@ -1,0 +1,6 @@
+name: QuestSystem
+version: '${project.version}'
+main: me.y.questsystem.main
+api-version: 1.19
+commands:
+  Quest:
