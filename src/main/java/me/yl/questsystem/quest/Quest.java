@@ -28,47 +28,36 @@ public class Quest {
     public ItemStack getItem() {
         return item;
     }
-
     public void setItem(ItemStack item) {
         this.item = item;
     }
-
     public int getItemAmount() {
         return itemAmount;
     }
-
     public void setItemAmount(int itemAmount) {
         this.itemAmount = itemAmount;
     }
-
     public double getReward() {
         return reward;
     }
-
     public void setReward(double reward) {
         this.reward = reward;
     }
-
     public NPCManager getNpc() {
         return npc;
     }
-
     public void setNpc(NPCManager npc) {
         this.npc = npc;
     }
-
     public int getQuestID() {
         return questID;
     }
-
     public void setQuestID(int questID) {
         this.questID = questID;
     }
-
     public Player getCreator() {
         return creator;
     }
-
     public void setCreator(Player creator) {
         this.creator = creator;
     }
