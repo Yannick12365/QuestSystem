@@ -1,11 +1,11 @@
-package me.y.questsystem;
+package me.yl.questsystem;
 
-import me.y.questsystem.commands.Quest;
-import me.y.questsystem.listener.PlayerJoin;
-import me.y.questsystem.listener.PlayerQuit;
-import me.y.questsystem.manager.ClickPacketReader;
-import me.y.questsystem.manager.ConfigManager;
-import me.y.questsystem.manager.NPCManager;
+import me.yl.questsystem.commands.Quest;
+import me.yl.questsystem.listener.PlayerJoin;
+import me.yl.questsystem.listener.PlayerQuit;
+import me.yl.questsystem.manager.ClickPacketReader;
+import me.yl.questsystem.manager.ConfigManager;
+import me.yl.questsystem.manager.NPCManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;

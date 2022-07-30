@@ -1,7 +1,7 @@
-package me.y.questsystem.listener;
+package me.yl.questsystem.listener;
 
-import me.y.questsystem.manager.ClickPacketReader;
-import me.y.questsystem.manager.NPCManager;
+import me.yl.questsystem.manager.ClickPacketReader;
+import me.yl.questsystem.manager.NPCManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;

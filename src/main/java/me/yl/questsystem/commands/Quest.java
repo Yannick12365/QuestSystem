@@ -1,8 +1,8 @@
-package me.y.questsystem.commands;
+package me.yl.questsystem.commands;
 
-import me.y.questsystem.manager.ChatManager;
+import me.yl.questsystem.manager.ChatManager;
 
-import me.y.questsystem.manager.NPCManager;
+import me.yl.questsystem.manager.NPCManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
