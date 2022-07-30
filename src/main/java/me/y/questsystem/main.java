@@ -2,6 +2,7 @@ package me.y.questsystem;
 
 import me.y.questsystem.commands.Quest;
 import me.y.questsystem.listener.PlayerJoin;
+import me.y.questsystem.listener.PlayerQuit;
 import me.y.questsystem.manager.ClickPacketReader;
 import me.y.questsystem.manager.ConfigManager;
 import me.y.questsystem.manager.NPCManager;
@@ -15,6 +16,7 @@ public final class main extends JavaPlugin {
         // Plugin startup logic
         getCommand("Quest").setExecutor(new Quest());
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerQuit(), this);
 
         new ConfigManager().createConfigConfiguration(this);
         new ConfigManager().readNPCconfig();

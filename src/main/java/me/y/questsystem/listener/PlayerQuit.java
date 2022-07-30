@@ -6,11 +6,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-public class PlayerJoin implements Listener{
+public class PlayerQuit implements Listener{
     @EventHandler
-    public void joinEvent(PlayerJoinEvent event){
-
-        new NPCManager().sentJoinPacket(event.getPlayer());
-        new ClickPacketReader(event.getPlayer()).inject();
+    public void quitEvent(PlayerJoinEvent event){
+        new ClickPacketReader(event.getPlayer()).uninject();
     }
 }
