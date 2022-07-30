@@ -63,7 +63,6 @@ public class ClickPacketReader {
                     }
                 }.runTaskTimer(mainPlugin, 0, 1);
             }
-
         }
     }
 
