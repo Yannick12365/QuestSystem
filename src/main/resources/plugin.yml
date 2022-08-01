@@ -2,5 +2,6 @@ name: QuestSystem
 version: '${project.version}'
 main: me.yl.questsystem.main
 api-version: 1.19
+depend: [PluginUtils]
 commands:
   Quest:

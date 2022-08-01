@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import me.yl.questsystem.main;
+import me.yl.questsystem.quest.Test;
 import net.minecraft.network.protocol.Packet;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -54,14 +55,14 @@ public class ClickPacketReader {
                     @Override
                     public void run() {
                         if (counter == 1){
-                            player.openInventory(player.getEnderChest());
+                            new Test(player);
+                            //player.openInventory(player.getEnderChest());
                             cancel();
                         }
                         counter++;
                     }
                 }.runTaskTimer(mainPlugin, 0, 1);
             }
-
         }
     }
 
