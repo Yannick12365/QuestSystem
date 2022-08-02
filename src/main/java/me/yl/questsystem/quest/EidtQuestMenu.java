@@ -14,10 +14,12 @@ public class EidtQuestMenu extends CustomMenu implements Closeable, Subdevideabl
 
 
     private HashMap<Integer, Integer> subMenuID;
+    private String NpcName;
 
-    public EidtQuestMenu(int size) {
+    public EidtQuestMenu(int size, String name) {
         super(size);
         subMenuID = new HashMap<>();
+        NpcName = name;
     }
 
     @Override

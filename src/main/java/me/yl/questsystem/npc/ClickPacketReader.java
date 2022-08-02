@@ -16,6 +16,7 @@ import java.util.List;
 public class ClickPacketReader {
     private Player player;
     private Channel channel;
+    private NPC npcFound;
 
     public ClickPacketReader(Player player) {
         this.player = player;
@@ -42,7 +43,7 @@ public class ClickPacketReader {
         if(packet.getClass().getSimpleName().equalsIgnoreCase("PacketPlayInUseEntity")){
             int id = (Integer)getValue(packet, "a");
 
-            NPC npcFound = null;
+            npcFound = null;
             for(NPC npc:new NPCManager().getNPClist()){
                 if (npc.getEntityplayer(npc).ae() == id){
                     npcFound = npc;
@@ -55,8 +56,7 @@ public class ClickPacketReader {
                     @Override
                     public void run() {
                         if (counter == 1){
-                            new Test(player);
-                            //player.openInventory(player.getEnderChest());
+                            new Test(player, npcFound.getName(npcFound));
                             cancel();
                         }
                         counter++;

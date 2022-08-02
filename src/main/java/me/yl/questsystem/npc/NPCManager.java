@@ -12,7 +12,6 @@ import net.minecraft.network.protocol.game.PacketPlayOutPlayerInfo;
 import net.minecraft.network.syncher.DataWatcher;
 import net.minecraft.network.syncher.DataWatcherObject;
 import net.minecraft.network.syncher.DataWatcherRegistry;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.server.level.WorldServer;
@@ -59,7 +58,7 @@ public class NPCManager {
 
             sentNPCPacket(npc.getEntityplayer(npc));
             NPC.add(npc);
-            new NPCConfigManager().writeNPCconfig(npc, new String[]{"create","create"});
+            new NPCConfigManager().writeNPCConfig(npc, new String[]{"create","create"});
         } else {
             p.sendMessage("Ein NPC mit diesem Namen existiert schon!");
         }
@@ -129,7 +128,7 @@ public class NPCManager {
                 connection.a(new PacketPlayOutEntityDestroy(entityPlayer.getBukkitEntity().getEntityId()));
             }
             NPC.remove(existNPC2);
-            new NPCConfigManager().deleteNPCInconfig(n);
+            new NPCConfigManager().deleteNPCInConfig(n);
         } else {
             p.sendMessage("Ein NPC mit diesem Namen existiert schon!");
         }
@@ -140,7 +139,7 @@ public class NPCManager {
             if (existNPC.getName(existNPC).equalsIgnoreCase(n)) {
                 existNPC.getEntityplayer(existNPC).b(p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
                 sentNPCPacket(existNPC.getEntityplayer(existNPC));
-                new NPCConfigManager().writeNPCconfig(existNPC,new String[]{"tp","tp"});
+                new NPCConfigManager().writeNPCConfig(existNPC,new String[]{"tp","tp"});
                 return;
             }
         }
@@ -156,7 +155,7 @@ public class NPCManager {
                     existNPC.getGameProfile(existNPC).getProperties().put("textures", new Property("textures", npcSkin[0], npcSkin[1]));
                 }
                 sentNPCPacket(existNPC.getEntityplayer(existNPC));
-                new NPCConfigManager().writeNPCconfig(existNPC, npcSkin);
+                new NPCConfigManager().writeNPCConfig(existNPC, npcSkin);
 
                 return;
             }

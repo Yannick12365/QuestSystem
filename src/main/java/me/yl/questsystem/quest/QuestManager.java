@@ -11,12 +11,7 @@ public class QuestManager {
 
     private static final HashMap<NPC, ArrayList<Quest>> questList =  new HashMap<>();
 
-
-
     public HashMap<NPC, ArrayList<Quest>> getQuestList() {
         return questList;
     }
-
-
-
 }
