@@ -9,7 +9,7 @@ public class Test {
 
     public Test(Player p){
         this.p = p;
-        InventoryMenuManager.getInstance().openMenu(p, new Menu(54));
+        InventoryMenuManager.getInstance().openMenu(p, new EidtQuestMenu(54));
 
     }
 
