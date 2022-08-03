@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class NPCConfigManager {
     public static File npcFile;
@@ -26,18 +27,6 @@ public class NPCConfigManager {
     }
 
     public void writeNPCConfig(NPC npc, String[] skin){
-        ArrayList<String> npcStringList = new ArrayList<>();
-        if(npcFileConf.contains("NPCList")){
-            if (!(npcFileConf.getStringList("NPCList").contains(npc.getName(npc)))) {
-                npcStringList = (ArrayList<String>) npcFileConf.getStringList("NPCList");
-                npcStringList.add(npc.getName(npc));
-                npcFileConf.set("NPCList", npcStringList);
-            }
-        }else{
-            npcStringList.add(npc.getName(npc));
-            npcFileConf.set("NPCList", npcStringList);
-        }
-
         if (skin[0] == "create" && skin[0] == "create") {
             npcFileConf.set(npc.getName(npc)+".Name",npc.getName(npc));
             npcFileConf.set(npc.getName(npc)+".X",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getX()));
@@ -67,35 +56,31 @@ public class NPCConfigManager {
         }
     }
 
-    public void readNPCConfig(){
-        if(npcFileConf.contains("NPCList")) {
-            ArrayList<String> npcStringList = (ArrayList<String>) npcFileConf.getStringList("NPCList");
+    public void readNPCConfig() {
+        Set<String> npcKeys = npcFileConf.getKeys(false);
 
-            if (npcStringList.size() > 0) {
-                Map<String, String> npcData = new HashMap<>();
+        if (npcKeys.size() > 0) {
+            Map<String, String> npcData = new HashMap<>();
 
-                for (String npcPlayer : npcStringList) {
-                    npcData.put("Name", npcFileConf.getString(npcPlayer+".Name"));
-                    npcData.put("X", npcFileConf.getString(npcPlayer+".X"));
-                    npcData.put("Y", npcFileConf.getString(npcPlayer+".Y"));
-                    npcData.put("Z", npcFileConf.getString(npcPlayer+".Z"));
-                    npcData.put("Yaw", npcFileConf.getString(npcPlayer+".Yaw"));
-                    npcData.put("Pitch", npcFileConf.getString(npcPlayer+".Pitch"));
-                    npcData.put("UUID", npcFileConf.getString(npcPlayer+".UUID"));
-                    npcData.put("World", npcFileConf.getString(npcPlayer+".World"));
-                    npcData.put("SkinValue", npcFileConf.getString(npcPlayer+".SkinValue"));
-                    npcData.put("SkinSignature", npcFileConf.getString(npcPlayer+".SkinSignature"));
+            for (String npcPlayer : npcKeys) {
+                npcData.put("Name", npcFileConf.getString(npcPlayer + ".Name"));
+                npcData.put("X", npcFileConf.getString(npcPlayer + ".X"));
+                npcData.put("Y", npcFileConf.getString(npcPlayer + ".Y"));
+                npcData.put("Z", npcFileConf.getString(npcPlayer + ".Z"));
+                npcData.put("Yaw", npcFileConf.getString(npcPlayer + ".Yaw"));
+                npcData.put("Pitch", npcFileConf.getString(npcPlayer + ".Pitch"));
+                npcData.put("UUID", npcFileConf.getString(npcPlayer + ".UUID"));
+                npcData.put("World", npcFileConf.getString(npcPlayer + ".World"));
+                npcData.put("SkinValue", npcFileConf.getString(npcPlayer + ".SkinValue"));
+                npcData.put("SkinSignature", npcFileConf.getString(npcPlayer + ".SkinSignature"));
 
-                    new NPCManager().createAfterRestart(npcData);
-                }
+                new NPCManager().createAfterRestart(npcData);
+
             }
         }
     }
 
     public void deleteNPCInConfig(String n){
-        ArrayList<String> npcList = (ArrayList<String>) npcFileConf.getStringList("NPCList");
-        npcList.remove(n);
-        npcFileConf.set("NPCList",npcList);
         npcFileConf.set(n,null);
         try {
             npcFileConf.save(npcFile);
