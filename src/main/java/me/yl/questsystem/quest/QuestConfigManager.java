@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ public class QuestConfigManager {
 
         for (String key:keyList){
             for(NPC npc:new NPCManager().getNPClist()){
-                if (npc.getName(npc) == key){
+                if (npc.getName() == key){
                     npcFound = npc;
                     break;
                 }
@@ -47,11 +48,23 @@ public class QuestConfigManager {
                 ItemStack item = questFileConf.getConfigurationSection(key+"."+subkey).getItemStack("Item");
                 int itemAmount = questFileConf.getConfigurationSection(key+"."+subkey).getInt("ItemAmount");
                 double reward = questFileConf.getConfigurationSection(key+"."+subkey).getDouble("Reward");
-                int questid = Integer.parseInt(questFileConf.getConfigurationSection(key+"."+subkey).toString());
+                int questid = Integer.parseInt(subkey);
 
                 questArrayList.add(new Quest(item,itemAmount,reward, npcFound,questid));
             }
             new QuestManager().getQuestList().put(npcFound, questArrayList);
+        }
+    }
+
+    public void writeQuesttConfig(Quest q){
+        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID(),q.getItem());
+        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID(),q.getItem());
+        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID(),q.getReward());
+
+        try {
+            questFileConf.save(questFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

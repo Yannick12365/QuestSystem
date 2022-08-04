@@ -1,4 +1,4 @@
-package me.yl.questsystem.quest;
+package me.yl.questsystem.quest.editMenu;
 
 import me.oxolotel.utils.bukkit.menuManager.menus.Closeable;
 import me.oxolotel.utils.bukkit.menuManager.menus.CustomMenu;

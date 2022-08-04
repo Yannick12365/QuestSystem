@@ -39,7 +39,7 @@ public class NPCManager {
         boolean exist = false;
 
         for (NPC existNPC : NPC) {
-            if (existNPC.getName(existNPC).equalsIgnoreCase(n) || n.equalsIgnoreCase("NPCList")) {
+            if (existNPC.getName().equalsIgnoreCase(n) || n.equalsIgnoreCase("NPCList")) {
                 exist = true;
             }
         }
@@ -56,7 +56,7 @@ public class NPCManager {
 
             NPC npc = new NPC(entityPlayer, gameProfile, world, server, name);
 
-            sentNPCPacket(npc.getEntityplayer(npc));
+            sentNPCPacket(npc.getEntityplayer());
             NPC.add(npc);
             new NPCConfigManager().writeNPCConfig(npc, new String[]{"create","create"});
         } else {
@@ -79,12 +79,12 @@ public class NPCManager {
     public void sentJoinPacket(Player player) {
         for (NPC npc : NPC) {
             PlayerConnection connection = ((CraftPlayer) player).getHandle().b;
-            connection.a(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.a, npc.getEntityplayer(npc)));
-            connection.a(new PacketPlayOutNamedEntitySpawn(npc.getEntityplayer(npc)));
+            connection.a(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.a, npc.getEntityplayer()));
+            connection.a(new PacketPlayOutNamedEntitySpawn(npc.getEntityplayer()));
 
-            fixSkin(connection, npc.getEntityplayer(npc));
+            fixSkin(connection, npc.getEntityplayer());
 
-            removeTablist(connection, npc.getEntityplayer(npc));
+            removeTablist(connection, npc.getEntityplayer());
         }
     }
 
@@ -116,9 +116,9 @@ public class NPCManager {
         NPC existNPC2 = null;
 
         for (NPC existNPC : NPC) {
-            if (existNPC.getName(existNPC).equalsIgnoreCase(n)) {
+            if (existNPC.getName().equalsIgnoreCase(n)) {
                 existNPC2 = existNPC;
-                entityPlayer = existNPC.getEntityplayer(existNPC);
+                entityPlayer = existNPC.getEntityplayer();
             }
         }
 
@@ -136,9 +136,9 @@ public class NPCManager {
 
     public void tpNPC(Player p, String n) {
         for (NPC existNPC : NPC) {
-            if (existNPC.getName(existNPC).equalsIgnoreCase(n)) {
-                existNPC.getEntityplayer(existNPC).b(p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
-                sentNPCPacket(existNPC.getEntityplayer(existNPC));
+            if (existNPC.getName().equalsIgnoreCase(n)) {
+                existNPC.getEntityplayer().b(p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
+                sentNPCPacket(existNPC.getEntityplayer());
                 new NPCConfigManager().writeNPCConfig(existNPC,new String[]{"tp","tp"});
                 return;
             }
@@ -148,13 +148,13 @@ public class NPCManager {
 
     public void changeNPCSkin(Player p, String n, String skin) {
         for (NPC existNPC : NPC) {
-            if (existNPC.getName(existNPC).equalsIgnoreCase(n)) {
+            if (existNPC.getName().equalsIgnoreCase(n)) {
                 String[] npcSkin = getSkin(p, skin);
-                existNPC.getGameProfile(existNPC).getProperties().clear();
+                existNPC.getGameProfile().getProperties().clear();
                 if (!(npcSkin[0].equalsIgnoreCase("") && npcSkin[0].equalsIgnoreCase(""))) {
-                    existNPC.getGameProfile(existNPC).getProperties().put("textures", new Property("textures", npcSkin[0], npcSkin[1]));
+                    existNPC.getGameProfile().getProperties().put("textures", new Property("textures", npcSkin[0], npcSkin[1]));
                 }
-                sentNPCPacket(existNPC.getEntityplayer(existNPC));
+                sentNPCPacket(existNPC.getEntityplayer());
                 new NPCConfigManager().writeNPCConfig(existNPC, npcSkin);
 
                 return;
@@ -194,7 +194,7 @@ public class NPCManager {
         NPC npc = new NPC(entityPlayer, gameProfile, world, server, name);
 
         if (!(npcData.get("SkinValue") == "create" && (npcData.get("SkinSignature")) == "create") || !(npcData.get("SkinValue") == "tp" && (npcData.get("SkinSignature")) == "tp")) {
-            npc.getGameProfile(npc).getProperties().put("textures", new Property("textures", npcData.get("SkinValue"), npcData.get("SkinSignature")));
+            npc.getGameProfile().getProperties().put("textures", new Property("textures", npcData.get("SkinValue"), npcData.get("SkinSignature")));
         }
         NPC.add(npc);
     }

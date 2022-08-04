@@ -26,21 +26,21 @@ public class NPC {
     }
 
 
-    public String getName(NPC npc){
-        return npc.name;
+    public String getName(){
+        return name;
     }
-    public WorldServer getWorld(NPC npc){
-        return npc.world;
+    public WorldServer getWorld(){
+        return world;
     }
-    public GameProfile getGameProfile(NPC npc){
-        return npc.gameProfile;
+    public GameProfile getGameProfile(){
+        return gameProfile;
     }
-    public EntityPlayer getEntityplayer(NPC npc){
-        return npc.npc;
+    public EntityPlayer getEntityplayer(){
+        return npc;
     }
 
-    public MinecraftServer getServer(NPC npc){
-        return npc.server;
+    public MinecraftServer getServer(){
+        return server;
     }
 
     public void setEntityplayer(EntityPlayer entityPlayer) {

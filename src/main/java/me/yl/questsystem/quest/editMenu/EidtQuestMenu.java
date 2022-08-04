@@ -1,8 +1,9 @@
-package me.yl.questsystem.quest;
+package me.yl.questsystem.quest.editMenu;
 
 import me.oxolotel.utils.bukkit.menuManager.menus.*;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryContent;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryItem;
+import me.yl.questsystem.quest.editMenu.EditSingleQuestMenu;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

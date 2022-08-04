@@ -20,7 +20,6 @@ public class Quest {
         this.reward = reward;
         this.npc = npc;
         questID = qm.getQuestList().get(npc).size()+1;
-
     }
 
     public Quest(ItemStack item, int itemAmount, double reward, NPC npc, int questID){

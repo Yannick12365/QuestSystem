@@ -6,7 +6,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -28,25 +27,25 @@ public class NPCConfigManager {
 
     public void writeNPCConfig(NPC npc, String[] skin){
         if (skin[0] == "create" && skin[0] == "create") {
-            npcFileConf.set(npc.getName(npc)+".Name",npc.getName(npc));
-            npcFileConf.set(npc.getName(npc)+".X",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getX()));
-            npcFileConf.set(npc.getName(npc)+".Y",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getY()));
-            npcFileConf.set(npc.getName(npc)+".Z",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getZ()));
-            npcFileConf.set(npc.getName(npc)+".Yaw",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getYaw()));
-            npcFileConf.set(npc.getName(npc)+".Pitch",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getPitch()));
-            npcFileConf.set(npc.getName(npc)+".UUID",npc.getGameProfile(npc).getId().toString());
-            npcFileConf.set(npc.getName(npc)+".World",npc.getWorld(npc).getWorld().getName());
-            npcFileConf.set(npc.getName(npc) + ".SkinValue", "Kein Skin");
-            npcFileConf.set(npc.getName(npc) + ".SkinSignature", "Kein Skin");
+            npcFileConf.set(npc.getName()+".Name",npc.getName());
+            npcFileConf.set(npc.getName()+".X",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getX()));
+            npcFileConf.set(npc.getName()+".Y",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getY()));
+            npcFileConf.set(npc.getName()+".Z",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getZ()));
+            npcFileConf.set(npc.getName()+".Yaw",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getYaw()));
+            npcFileConf.set(npc.getName()+".Pitch",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getPitch()));
+            npcFileConf.set(npc.getName()+".UUID",npc.getGameProfile().getId().toString());
+            npcFileConf.set(npc.getName()+".World",npc.getWorld().getWorld().getName());
+            npcFileConf.set(npc.getName() + ".SkinValue", "Kein Skin");
+            npcFileConf.set(npc.getName() + ".SkinSignature", "Kein Skin");
         }else if(skin[0] == "tp" && skin[0] == "tp"){
-            npcFileConf.set(npc.getName(npc)+".X",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getX()));
-            npcFileConf.set(npc.getName(npc)+".Y",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getY()));
-            npcFileConf.set(npc.getName(npc)+".Z",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getZ()));
-            npcFileConf.set(npc.getName(npc)+".Yaw",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getYaw()));
-            npcFileConf.set(npc.getName(npc)+".Pitch",Double.toString(npc.getEntityplayer(npc).getBukkitEntity().getLocation().getPitch()));
+            npcFileConf.set(npc.getName()+".X",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getX()));
+            npcFileConf.set(npc.getName()+".Y",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getY()));
+            npcFileConf.set(npc.getName()+".Z",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getZ()));
+            npcFileConf.set(npc.getName()+".Yaw",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getYaw()));
+            npcFileConf.set(npc.getName()+".Pitch",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getPitch()));
         } else {
-            npcFileConf.set(npc.getName(npc) + ".SkinValue", skin[0]);
-            npcFileConf.set(npc.getName(npc) + ".SkinSignature", skin[1]);
+            npcFileConf.set(npc.getName() + ".SkinValue", skin[0]);
+            npcFileConf.set(npc.getName() + ".SkinSignature", skin[1]);
         }
 
         try {

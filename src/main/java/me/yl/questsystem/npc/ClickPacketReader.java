@@ -4,7 +4,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import me.yl.questsystem.main;
-import me.yl.questsystem.quest.Test;
 import net.minecraft.network.protocol.Packet;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -45,7 +44,7 @@ public class ClickPacketReader {
 
             npcFound = null;
             for(NPC npc:new NPCManager().getNPClist()){
-                if (npc.getEntityplayer(npc).ae() == id){
+                if (npc.getEntityplayer().ae() == id){
                     npcFound = npc;
                 }
             }
@@ -56,7 +55,7 @@ public class ClickPacketReader {
                     @Override
                     public void run() {
                         if (counter == 1){
-                            new Test(player, npcFound.getName(npcFound));
+                            player.openInventory(player.getEnderChest());
                             cancel();
                         }
                         counter++;
