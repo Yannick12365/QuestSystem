@@ -28,7 +28,6 @@ public class Quest {
         this.reward = reward;
         this.npc = npc;
         this.questID = questID;
-
     }
 
     public ItemStack getItem() {

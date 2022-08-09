@@ -39,7 +39,7 @@ public class NPCManager {
         boolean exist = false;
 
         for (NPC existNPC : NPC) {
-            if (existNPC.getName().equalsIgnoreCase(n) || n.equalsIgnoreCase("NPCList")) {
+            if (existNPC.getName().equalsIgnoreCase(n)) {
                 exist = true;
             }
         }
