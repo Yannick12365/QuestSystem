@@ -3,12 +3,13 @@ package me.yl.questsystem.npc;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
+import me.oxolotel.utils.bukkit.menuManager.InventoryMenuManager;
 import me.yl.questsystem.main;
 import net.minecraft.network.protocol.Packet;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-
+import me.yl.questsystem.quest.editMenu.EditQuestMenu;
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -55,8 +56,8 @@ public class ClickPacketReader {
                     @Override
                     public void run() {
                         if (counter == 1){
-                            player.openInventory(player.getEnderChest());
-                            cancel();
+                            InventoryMenuManager.getInstance().openMenu(player, new EditQuestMenu(54, npcFound.getName()));
+                             cancel();
                         }
                         counter++;
                     }

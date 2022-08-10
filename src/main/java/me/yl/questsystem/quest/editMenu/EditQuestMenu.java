@@ -11,16 +11,17 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 
-public class EidtQuestMenu extends CustomMenu implements Closeable, Subdevideable, Pageable {
+public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideable, Pageable {
 
 
     private HashMap<Integer, Integer> subMenuID;
     private String NpcName;
 
-    public EidtQuestMenu(int size, String name) {
+    public EditQuestMenu(int size, String name) {
         super(size);
         subMenuID = new HashMap<>();
         NpcName = name;
+        setTitle("Edit Quest");
     }
 
     @Override
