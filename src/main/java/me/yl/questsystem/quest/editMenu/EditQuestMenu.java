@@ -27,7 +27,8 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
     @Override
     public InventoryContent getContents(Player player) {
         InventoryContent c = new InventoryContent();
-        c.fillRow(0, new InventoryItem(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), ()-> {}));
+
+        c.fillRow(0, new InventoryItem(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), () -> {}));
         c = fillQuests(c);
        return c;
     }
@@ -42,9 +43,9 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
         int counterQuests = 32;
         int counterSlot = 8;
         if (counterQuests == 0) return c;
-        for (int i = 0; i <= 3; i++){
+        for (int i = 0; i < 3; i++){
             counterSlot +=2;
-            for (int z = 0; z <= 7; z++){
+            for (int z = 0; z < 7; z++){
                 ItemStack questItem = new ItemStack(Material.BOOK);
                 ItemMeta questMeta = questItem.getItemMeta();
 
