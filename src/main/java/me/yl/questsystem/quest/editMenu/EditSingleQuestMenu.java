@@ -16,7 +16,8 @@ public class EditSingleQuestMenu extends CustomMenu implements Closeable, Submen
 
     @Override
     public InventoryContent getContents(Player player) {
-        return null;
+        InventoryContent c = new InventoryContent();
+        return c;
     }
 
     @Override

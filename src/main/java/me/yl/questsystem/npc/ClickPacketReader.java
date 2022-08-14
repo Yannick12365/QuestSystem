@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import me.oxolotel.utils.bukkit.menuManager.InventoryMenuManager;
 import me.yl.questsystem.main;
+import me.yl.questsystem.quest.QuestManager;
 import net.minecraft.network.protocol.Packet;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -56,8 +57,14 @@ public class ClickPacketReader {
                     @Override
                     public void run() {
                         if (counter == 1){
-                            InventoryMenuManager.getInstance().openMenu(player, new EditQuestMenu(54, npcFound.getName()));
-                             cancel();
+                            int questCount = (new QuestManager().countNPCQuests(npcFound.getName()));
+                            if (questCount == 0){
+                                questCount = 1;
+                            }
+                            int countSlots = (int)Math.ceil(((double)questCount)/21)*54;
+
+                            InventoryMenuManager.getInstance().openMenu(player, new EditQuestMenu(countSlots, npcFound.getName()));
+                            cancel();
                         }
                         counter++;
                     }

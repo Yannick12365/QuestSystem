@@ -6,6 +6,7 @@ import me.yl.questsystem.commands.Quest;
 import me.yl.questsystem.listener.PlayerJoin;
 import me.yl.questsystem.listener.PlayerQuit;
 import me.yl.questsystem.npc.NPCConfigManager;
+import me.yl.questsystem.quest.QuestConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,6 +20,9 @@ public final class main extends JavaPlugin {
 
         new NPCConfigManager().createConfigConfiguration(this);
         new NPCConfigManager().readNPCConfig();
+
+        new QuestConfigManager().createConfigConfiguration(this);
+        new QuestConfigManager().readQuestConfig();
     }
 
     @Override
