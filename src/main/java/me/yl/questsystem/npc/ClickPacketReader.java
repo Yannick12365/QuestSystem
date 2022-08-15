@@ -61,8 +61,13 @@ public class ClickPacketReader {
                             if (questCount == 0){
                                 questCount = 1;
                             }
-                            int countSlots = (int)Math.ceil(((double)questCount)/21)*54;
+                            int countSlots;
 
+                            if (questCount % 21 == 0){
+                                countSlots = (questCount/21*54) - (questCount/21*9);
+                            }else{
+                                countSlots = (((questCount/21)+1)*54) - (((questCount/21)+1)*9);
+                            }
                             InventoryMenuManager.getInstance().openMenu(player, new EditQuestMenu(countSlots, npcFound.getName()));
                             cancel();
                         }

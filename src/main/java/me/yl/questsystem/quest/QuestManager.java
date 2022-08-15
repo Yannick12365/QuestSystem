@@ -33,4 +33,11 @@ public class QuestManager {
         }
         return null;
     }
+
+    public ArrayList<Quest> getNPCQuests(String n){
+        if (questList.get(n) != null) {
+            return questList.get(n);
+        }
+        return null;
+    }
 }
