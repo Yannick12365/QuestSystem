@@ -1,8 +1,10 @@
 package me.yl.questsystem.quest.editMenu;
 
+import me.oxolotel.utils.bukkit.menuManager.InventoryMenuManager;
 import me.oxolotel.utils.bukkit.menuManager.menus.*;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryContent;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryItem;
+import me.yl.questsystem.manager.ItemManager;
 import me.yl.questsystem.quest.Quest;
 import me.yl.questsystem.quest.QuestManager;
 import me.yl.questsystem.quest.editMenu.EditSingleQuestMenu;
@@ -13,13 +15,15 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideable, Pageable {
+public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideable, Pageable, Submenu {
 
 
     private static HashMap<Integer, Integer> slotQuestID;
     private static String NpcName;
     private static int GuiSize;
+    private ArrayList<Integer> createSlotList;
 
     public EditQuestMenu(int size, String name) {
         super(size);
@@ -27,6 +31,7 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
         slotQuestID = new HashMap<>();
         NpcName = name;
         setTitle("Edit Quest");
+        createSlotList = new ArrayList<>();
     }
 
     @Override
@@ -38,27 +43,22 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
         int questCount = new QuestManager().countNPCQuests(NpcName);
         ArrayList<Quest> questLists = new QuestManager().getNPCQuests(NpcName);
 
-        ItemStack erstellItem = new ItemStack(Material.DIAMOND_PICKAXE);
-        ItemMeta erstellMeta = erstellItem.getItemMeta();
-        erstellMeta.setDisplayName("Quest erstellen");
-        erstellItem.setItemMeta(erstellMeta);
+        ItemStack erstellItem = new ItemManager(Material.DIAMOND_PICKAXE).setDisplayName("Quest erstellen").build();
+        ItemStack closeItem = new ItemManager(Material.BARRIER).setDisplayName("Menü verlassen").build();
 
-        ItemStack closeItem = new ItemStack(Material.BARRIER);
-        ItemMeta closeMeta = closeItem.getItemMeta();
-        closeMeta.setDisplayName("Menü verlassen");
-        closeItem.setItemMeta(closeMeta);
+        createSlotList.add(40);
+        c.addGuiItem(40, new InventoryItem(erstellItem, () -> {InventoryMenuManager.getInstance().openMenu(player, new CreateQuestMenu(54));}));
 
-        c.addGuiItem(40, new InventoryItem(erstellItem, () -> {}));
-        c.addGuiItem(42, new InventoryItem(closeItem, () -> {}));
+        c.addGuiItem(42, new InventoryItem(closeItem, () -> {player.closeInventory();}));
 
         if (questCount != 0 || questLists == null) {
             for (int i = questCount; i > 0; i -= 21) {
                 c = fillQuests(c, i, slots, questLists, questIDCount);
                 slots += 45;
                 questIDCount += 21;
-
-                c.addGuiItem(slots - 14 + 9, new InventoryItem(erstellItem, () -> {}));
-                c.addGuiItem(slots - 12 + 9, new InventoryItem(closeItem, () -> {}));
+                createSlotList.add(slots-14 +9);
+                c.addGuiItem(slots - 14 + 9, new InventoryItem(erstellItem, () -> {InventoryMenuManager.getInstance().openMenu(player, new CreateQuestMenu(54));}));
+                c.addGuiItem(slots - 12 + 9, new InventoryItem(closeItem, () -> {player.closeInventory();}));
             }
         }
        return c;
@@ -81,13 +81,11 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
             counterSlot +=2;
             for (int z = 0; z < 7; z++){
                 Quest quest = questList.get(questIDCount);
-                ItemStack questItem = new ItemStack(Material.BOOK);
-                ItemMeta questMeta = questItem.getItemMeta();
-                questMeta.setDisplayName("Quest");
+
                 ArrayList<String> lore = new ArrayList<>();
                 lore.add("Gib "+quest.getItemAmount()+" "+quest.getItem().toString()+ "ab und erhalte "+quest.getReward());
-                questMeta.setLore(lore);
-                questItem.setItemMeta(questMeta);
+                ItemStack questItem = new ItemManager(Material.BOOK).setDisplayName("Quest").setLore(lore).build();
+
                 slotQuestID.put(counterSlot,1);
                 c.addGuiItem(counterSlot, new InventoryItem(questItem, ()-> {}) );
 
@@ -104,12 +102,16 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
 
     @Override
     public boolean hasSubmenu(int i) {
-        if(!slotQuestID.containsKey(i))return false;
+        if(!slotQuestID.containsKey(i) || !createSlotList.contains(i))return false;
         return true;
     }
 
     @Override
     public CustomMenu getSubmenu(int i) {
+
+        if(createSlotList.contains(i)){
+            return new CreateQuestMenu(54);
+        }
         if(!slotQuestID.containsKey(i))return null;
         return new EditSingleQuestMenu(54, slotQuestID.get(i));
     }

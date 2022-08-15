@@ -16,7 +16,7 @@ public final class main extends JavaPlugin {
         getCommand("Quest").setExecutor(new Quest());
         ModuleManager.loadModule(ModuleManager.getPluginModuleByClass(InventoryMenuManager.class));
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerQuit(), this);
+      //  Bukkit.getPluginManager().registerEvents(new PlayerQuit(), this);
 
         new NPCConfigManager().createConfigConfiguration(this);
         new NPCConfigManager().readNPCConfig();
