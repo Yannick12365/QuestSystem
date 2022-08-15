@@ -38,27 +38,29 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
         int questCount = new QuestManager().countNPCQuests(NpcName);
         ArrayList<Quest> questLists = new QuestManager().getNPCQuests(NpcName);
 
+        ItemStack erstellItem = new ItemStack(Material.DIAMOND_PICKAXE);
+        ItemMeta erstellMeta = erstellItem.getItemMeta();
+        erstellMeta.setDisplayName("Quest erstellen");
+        erstellItem.setItemMeta(erstellMeta);
+
+        ItemStack closeItem = new ItemStack(Material.BARRIER);
+        ItemMeta closeMeta = closeItem.getItemMeta();
+        closeMeta.setDisplayName("Menü verlassen");
+        closeItem.setItemMeta(closeMeta);
+
+        c.addGuiItem(40, new InventoryItem(erstellItem, () -> {}));
+        c.addGuiItem(42, new InventoryItem(closeItem, () -> {}));
+
         if (questCount != 0 || questLists == null) {
             for (int i = questCount; i > 0; i -= 21) {
                 c = fillQuests(c, i, slots, questLists, questIDCount);
                 slots += 45;
                 questIDCount += 21;
 
-                ItemStack questErstellen = new ItemStack(Material.DIAMOND_PICKAXE);
-                ItemMeta erstellMeta = questErstellen.getItemMeta();
-                erstellMeta.setDisplayName("Quest erstellen");
-                questErstellen.setItemMeta(erstellMeta);
-
-                ItemStack questZurueck = new ItemStack(Material.BARRIER);
-                ItemMeta zurueckMeta = questZurueck.getItemMeta();
-                zurueckMeta.setDisplayName("Menü verlassen");
-                questZurueck.setItemMeta(erstellMeta);
-
-                c.addGuiItem(slots - 14 + 9, new InventoryItem(questErstellen, () -> {}));
-                c.addGuiItem(slots - 12 + 9, new InventoryItem(questZurueck, () -> {}));
+                c.addGuiItem(slots - 14 + 9, new InventoryItem(erstellItem, () -> {}));
+                c.addGuiItem(slots - 12 + 9, new InventoryItem(closeItem, () -> {}));
             }
         }
-
        return c;
     }
 
