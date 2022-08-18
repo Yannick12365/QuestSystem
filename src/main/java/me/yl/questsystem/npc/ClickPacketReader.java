@@ -28,7 +28,8 @@ public class ClickPacketReader {
         channel = cPlayer.getHandle().b.a().m;
         channel.pipeline().addAfter("decoder", "PacketInjector", new MessageToMessageDecoder<Packet<?>>() {
             @Override protected void decode(ChannelHandlerContext arg0, Packet<?> packet, List<Object> arg2) throws Exception {
-                arg2.add(packet);readPacket(packet);
+                arg2.add(packet);
+                readPacket(packet);
             }
         });
     }
