@@ -2,6 +2,7 @@ package me.yl.questsystem.quest;
 
 import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.npc.NPCManager;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,11 +16,19 @@ public class QuestManager {
         return questList;
     }
 
-    public int countNPCQuests(String n){
-        if (questList.get(n) == null) {
-            return 0;
+    public int countNPCQuests(String n) {
+        NPC npcFound = null;
+        for (NPC existNPC : new NPCManager().getNPClist()) {
+            if (existNPC.getName().equalsIgnoreCase(n)) {
+                npcFound = existNPC;
+            }
         }
-        return questList.get(n).size();
+        if (npcFound != null) {
+            if (questList.get(npcFound) != null) {
+                return questList.get(npcFound).size();
+            }
+        }
+        return 0;
     }
 
     public Quest getNPCQuestByID(String n,int id){
@@ -34,11 +43,20 @@ public class QuestManager {
         return null;
     }
 
-    public ArrayList<Quest> getNPCQuests(String n){
-        if (questList.get(n) != null) {
-            return questList.get(n);
+    public ArrayList<Quest> getNPCQuests(String n) {
+
+        NPC npcFound = null;
+        for (NPC existNPC : new NPCManager().getNPClist()) {
+            if (existNPC.getName().equalsIgnoreCase(n)) {
+                npcFound = existNPC;
+            }
         }
-        return null;
+        if (npcFound != null) {
+            if (questList.get(npcFound) != null) {
+                return questList.get(npcFound);
+            }
+        }
+        return new ArrayList<Quest>();
     }
 
     public boolean checkSignLoreMenge(String lore){
@@ -53,4 +71,6 @@ public class QuestManager {
         }
         return false;
     }
+
+
 }

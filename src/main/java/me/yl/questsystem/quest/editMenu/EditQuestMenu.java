@@ -5,6 +5,7 @@ import me.oxolotel.utils.bukkit.menuManager.menus.*;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryContent;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryItem;
 import me.yl.questsystem.manager.ItemManager;
+import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.quest.Quest;
 import me.yl.questsystem.quest.QuestManager;
 import me.yl.questsystem.quest.editMenu.EditSingleQuestMenu;
@@ -21,15 +22,15 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
 
 
     private static HashMap<Integer, Integer> slotQuestID;
-    private static String NpcName;
-    private static int GuiSize;
+    private static NPC npc;
+    private static int guiSize;
     private ArrayList<Integer> createSlotList;
 
-    public EditQuestMenu(int size, String name) {
+    public EditQuestMenu(int size, NPC npc) {
         super(size);
-        GuiSize = size;
+        guiSize = size;
         slotQuestID = new HashMap<>();
-        NpcName = name;
+        this.npc = npc;
         setTitle("Edit Quest");
         createSlotList = new ArrayList<>();
     }
@@ -37,11 +38,11 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
     @Override
     public InventoryContent getContents(Player player) {
         InventoryContent c = new InventoryContent();
-        c.fill(0,GuiSize, new InventoryItem(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), ()->{}));
+        c.fill(0,guiSize, new InventoryItem(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), ()->{}));
         int slots = 0;
-        int questIDCount = 1;
-        int questCount = new QuestManager().countNPCQuests(NpcName);
-        ArrayList<Quest> questLists = new QuestManager().getNPCQuests(NpcName);
+        int questIDCount = 0;
+        int questCount = new QuestManager().countNPCQuests(npc.getName());
+        ArrayList<Quest> questLists = new QuestManager().getNPCQuests(npc.getName());
 
         ItemStack erstellItem = new ItemManager(Material.DIAMOND_PICKAXE).setDisplayName("Quest erstellen").build();
         ItemStack closeItem = new ItemManager(Material.BARRIER).setDisplayName("Menü verlassen").build();
@@ -50,9 +51,10 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
         c.addGuiItem(40, new InventoryItem(erstellItem, () -> {}));
         //InventoryMenuManager.getInstance().openMenu(player, new CreateQuestMenu(54));
 
-        c.addGuiItem(42, new InventoryItem(closeItem, () -> {player.closeInventory();}));
+        c.addGuiItem(42, new InventoryItem(closeItem, () -> {InventoryMenuManager.getInstance().closeMenu(player);}));
+            player.sendMessage(String.valueOf(questLists.size()));
+        if (!(questCount == 0 || questLists.size() == 0)) {
 
-        if (questCount != 0 || questLists == null) {
             for (int i = questCount; i > 0; i -= 21) {
                 c = fillQuests(c, i, slots, questLists, questIDCount);
                 slots += 45;
@@ -60,7 +62,7 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
                 createSlotList.add(slots-14 +9);
                 c.addGuiItem(slots - 14 + 9, new InventoryItem(erstellItem, () -> {}));
                 //InventoryMenuManager.getInstance().openMenu(player, new CreateQuestMenu(54));
-                c.addGuiItem(slots - 12 + 9, new InventoryItem(closeItem, () -> {player.closeInventory();}));
+                c.addGuiItem(slots - 12 + 9, new InventoryItem(closeItem, () -> {InventoryMenuManager.getInstance().closeMenu(player);}));
             }
         }
        return c;
@@ -109,9 +111,8 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
 
     @Override
     public CustomMenu getSubmenu(int i) {
-        System.out.println("------------------------------------T2----------------------------------");
         if(createSlotList.contains(i)){
-            return new CreateQuestMenu(54);
+            return new CreateQuestMenu(54, npc);
         }
         if(!slotQuestID.containsKey(i)) {
             return null;

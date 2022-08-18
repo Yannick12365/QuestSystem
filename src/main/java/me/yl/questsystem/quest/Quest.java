@@ -14,12 +14,12 @@ public class Quest {
     private NPC npc;
     private int questID;
 
-    public Quest(ItemStack item, int itemAmount, double reward, NPC npc, QuestManager qm){
+    public Quest(ItemStack item, int itemAmount, double reward, NPC npc){
         this.item = item;
         this.itemAmount = itemAmount;
         this.reward = reward;
         this.npc = npc;
-        questID = qm.getQuestList().get(npc).size()+1;
+        questID = new QuestManager().getQuestList().get(npc).size()+1;
     }
 
     public Quest(ItemStack item, int itemAmount, double reward, NPC npc, int questID){

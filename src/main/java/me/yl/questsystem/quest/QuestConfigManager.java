@@ -35,7 +35,7 @@ public class QuestConfigManager {
 
         for (String key:keyList){
             for(NPC npc:new NPCManager().getNPClist()){
-                if (npc.getName() == key){
+                if (npc.getName().equals(key)){
                     npcFound = npc;
                     break;
                 }
@@ -45,9 +45,9 @@ public class QuestConfigManager {
             }
 
             for (String subkey: questFileConf.getConfigurationSection(key).getKeys(false)) {
-                ItemStack item = questFileConf.getConfigurationSection(key+"."+subkey).getItemStack("Item");
-                int itemAmount = questFileConf.getConfigurationSection(key+"."+subkey).getInt("ItemAmount");
-                double reward = questFileConf.getConfigurationSection(key+"."+subkey).getDouble("Reward");
+                ItemStack item = new ItemStack(Material.getMaterial(questFileConf.getString(key+"."+subkey+".Item")));
+                int itemAmount = questFileConf.getInt(key+"."+subkey +".ItemAmount");
+                double reward = questFileConf.getDouble(key+"."+subkey+ ".Reward");
                 int questid = Integer.parseInt(subkey);
 
                 questArrayList.add(new Quest(item,itemAmount,reward, npcFound,questid));
@@ -57,12 +57,15 @@ public class QuestConfigManager {
     }
 
     public void writeQuesttConfig(Quest q){
-        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID(),q.getItem());
-        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID(),q.getItem());
-        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID(),q.getReward());
+        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Item",q.getItem().getType().toString());
+        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".ItemAmount",q.getItemAmount());
+        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Reward",q.getReward());
 
         try {
             questFileConf.save(questFile);
+            ArrayList<Quest> ql = new QuestManager().getNPCQuests(q.getNpc().getName());
+            ql.add(q);
+            new QuestManager().getQuestList().put(q.getNpc(), ql);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
