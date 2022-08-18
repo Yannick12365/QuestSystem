@@ -40,4 +40,17 @@ public class QuestManager {
         }
         return null;
     }
+
+    public boolean checkSignLoreMenge(String lore){
+        return lore.matches("[1-9][0-9]*");
+    }
+
+    public boolean checkSignLorePreis(String lore){
+        if(lore.matches("[0-9]+(\\.[0-9]*)?")){
+            return true;
+        } else if (lore.matches("[0-9]+(,[0-9]*)?")) {
+            return true;
+        }
+        return false;
+    }
 }

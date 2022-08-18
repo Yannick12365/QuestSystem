@@ -47,7 +47,8 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
         ItemStack closeItem = new ItemManager(Material.BARRIER).setDisplayName("Menü verlassen").build();
 
         createSlotList.add(40);
-        c.addGuiItem(40, new InventoryItem(erstellItem, () -> {InventoryMenuManager.getInstance().openMenu(player, new CreateQuestMenu(54));}));
+        c.addGuiItem(40, new InventoryItem(erstellItem, () -> {}));
+        //InventoryMenuManager.getInstance().openMenu(player, new CreateQuestMenu(54));
 
         c.addGuiItem(42, new InventoryItem(closeItem, () -> {player.closeInventory();}));
 
@@ -57,7 +58,8 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
                 slots += 45;
                 questIDCount += 21;
                 createSlotList.add(slots-14 +9);
-                c.addGuiItem(slots - 14 + 9, new InventoryItem(erstellItem, () -> {InventoryMenuManager.getInstance().openMenu(player, new CreateQuestMenu(54));}));
+                c.addGuiItem(slots - 14 + 9, new InventoryItem(erstellItem, () -> {}));
+                //InventoryMenuManager.getInstance().openMenu(player, new CreateQuestMenu(54));
                 c.addGuiItem(slots - 12 + 9, new InventoryItem(closeItem, () -> {player.closeInventory();}));
             }
         }
@@ -102,17 +104,18 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
 
     @Override
     public boolean hasSubmenu(int i) {
-        if(!slotQuestID.containsKey(i) || !createSlotList.contains(i))return false;
-        return true;
+        return slotQuestID.containsKey(i) || createSlotList.contains(i);
     }
 
     @Override
     public CustomMenu getSubmenu(int i) {
-
+        System.out.println("------------------------------------T2----------------------------------");
         if(createSlotList.contains(i)){
             return new CreateQuestMenu(54);
         }
-        if(!slotQuestID.containsKey(i))return null;
+        if(!slotQuestID.containsKey(i)) {
+            return null;
+        }
         return new EditSingleQuestMenu(54, slotQuestID.get(i));
     }
 }
