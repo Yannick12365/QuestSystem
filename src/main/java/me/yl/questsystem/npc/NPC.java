@@ -5,26 +5,18 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.server.level.WorldServer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class NPC {
-    private EntityPlayer npc;
-    private GameProfile gameProfile;
-    private WorldServer world;
-    private MinecraftServer server;
-    private String name;
+    private final EntityPlayer npc;
+    private final GameProfile gameProfile;
+    private final WorldServer world;
+    private final String name;
 
-    public NPC(){}
-
-    public NPC(EntityPlayer npc, GameProfile gameProfile, WorldServer world, MinecraftServer server, String name){
+    public NPC(EntityPlayer npc, GameProfile gameProfile, WorldServer world, String name){
         this.npc = npc;
         this.gameProfile = gameProfile;
         this. world = world;
-        this.server = server;
         this.name = name;
     }
-
 
     public String getName(){
         return name;
@@ -37,29 +29,5 @@ public class NPC {
     }
     public EntityPlayer getEntityplayer(){
         return npc;
-    }
-
-    public MinecraftServer getServer(){
-        return server;
-    }
-
-    public void setEntityplayer(EntityPlayer entityPlayer) {
-        this.npc = npc;
-    }
-
-    public void setGameProfile(GameProfile gameProfile) {
-        this.gameProfile = gameProfile;
-    }
-
-    public void setWorld(WorldServer world) {
-        this.world = world;
-    }
-
-    public void setServer(MinecraftServer server) {
-        this.server = server;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Set;
 
 public class QuestConfigManager {
@@ -44,8 +45,8 @@ public class QuestConfigManager {
                 return;
             }
 
-            for (String subkey: questFileConf.getConfigurationSection(key).getKeys(false)) {
-                ItemStack item = new ItemStack(Material.getMaterial(questFileConf.getString(key+"."+subkey+".Item")));
+            for (String subkey: Objects.requireNonNull(questFileConf.getConfigurationSection(key)).getKeys(false)) {
+                ItemStack item = new ItemStack(Objects.requireNonNull(Material.getMaterial(Objects.requireNonNull(questFileConf.getString(key + "." + subkey + ".Item")))));
                 int itemAmount = questFileConf.getInt(key+"."+subkey +".ItemAmount");
                 double reward = questFileConf.getDouble(key+"."+subkey+ ".Reward");
                 int questid = Integer.parseInt(subkey);

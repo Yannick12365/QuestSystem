@@ -8,15 +8,12 @@ import me.yl.questsystem.manager.ItemManager;
 import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.quest.Quest;
 import me.yl.questsystem.quest.QuestManager;
-import me.yl.questsystem.quest.editMenu.EditSingleQuestMenu;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideable, Pageable, Submenu {
 
@@ -24,7 +21,7 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
     private static HashMap<Integer, Integer> slotQuestID;
     private static NPC npc;
     private static int guiSize;
-    private ArrayList<Integer> createSlotList;
+    private final ArrayList<Integer> createSlotList;
 
     public EditQuestMenu(int size, NPC npc) {
         super(size);
@@ -49,7 +46,6 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
 
         createSlotList.add(40);
         c.addGuiItem(40, new InventoryItem(erstellItem, () -> {}));
-        //InventoryMenuManager.getInstance().openMenu(player, new CreateQuestMenu(54));
 
         c.addGuiItem(42, new InventoryItem(closeItem, () -> {InventoryMenuManager.getInstance().closeMenu(player);}));
             player.sendMessage(String.valueOf(questLists.size()));
@@ -61,7 +57,6 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
                 questIDCount += 21;
                 createSlotList.add(slots-14 +9);
                 c.addGuiItem(slots - 14 + 9, new InventoryItem(erstellItem, () -> {}));
-                //InventoryMenuManager.getInstance().openMenu(player, new CreateQuestMenu(54));
                 c.addGuiItem(slots - 12 + 9, new InventoryItem(closeItem, () -> {InventoryMenuManager.getInstance().closeMenu(player);}));
             }
         }
@@ -75,16 +70,14 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
 
     private InventoryContent fillQuests(InventoryContent c, int cq, int cs, ArrayList<Quest> qls, int qid){
         int counterInv = 0;
-        int counterQuests = cq;
         int counterSlot = cs+8;
         int questIDCount = qid;
-        ArrayList<Quest> questList = qls;
 
-        if (counterQuests == 0) return c;
+        if (cq == 0) return c;
         for (int i = 0; i < 3; i++){
             counterSlot +=2;
             for (int z = 0; z < 7; z++){
-                Quest quest = questList.get(questIDCount);
+                Quest quest = qls.get(questIDCount);
 
                 ArrayList<String> lore = new ArrayList<>();
                 lore.add("Gib "+quest.getItemAmount()+" "+quest.getItem().toString()+ "ab und erhalte "+quest.getReward());
@@ -96,7 +89,7 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
                 counterSlot++;
                 counterInv++;
                 questIDCount++;
-                if(counterInv == 21 || counterInv == counterQuests) {
+                if(counterInv == 21 || counterInv == cq) {
                     return c;
                 }
             }

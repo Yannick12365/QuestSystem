@@ -10,8 +10,8 @@ import java.util.Arrays;
 
 public class ItemManager {
 
-        private ItemStack item;
-        private ItemMeta itemMeta;
+        private final ItemStack item;
+        private final ItemMeta itemMeta;
 
         public ItemManager(Material material){
             item = new ItemStack(material);

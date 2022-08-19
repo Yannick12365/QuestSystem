@@ -20,7 +20,7 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
     private boolean commandCheck;
     private final InventoryContent content;
     private Player p;
-    private NPC npc;
+    private final NPC npc;
 
     public CreateQuestMenu(int size, NPC npc) {
         super(size);

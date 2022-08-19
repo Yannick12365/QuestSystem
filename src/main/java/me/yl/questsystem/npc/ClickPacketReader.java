@@ -15,7 +15,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 public class ClickPacketReader {
-    private Player player;
+    private final Player player;
     private Channel channel;
     private NPC npcFound;
 
@@ -85,7 +85,7 @@ public class ClickPacketReader {
             Field field = obj.getClass().getDeclaredField(name);
             field.setAccessible(true);
             return field.get(obj);
-        }catch(Exception e){}
+        }catch(Exception ignored){}
         return null;
     }
 }

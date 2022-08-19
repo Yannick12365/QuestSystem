@@ -7,7 +7,6 @@ import me.yl.questsystem.listener.MenuClick;
 import me.yl.questsystem.listener.PlayerJoin;
 import me.yl.questsystem.npc.NPCConfigManager;
 import me.yl.questsystem.quest.QuestConfigManager;
-import me.yl.questsystem.quest.editMenu.CreateQuestMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 

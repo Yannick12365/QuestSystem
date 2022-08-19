@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class NPCConfigManager {
@@ -26,7 +27,7 @@ public class NPCConfigManager {
     }
 
     public void writeNPCConfig(NPC npc, String[] skin){
-        if (skin[0] == "create" && skin[0] == "create") {
+        if (skin[0].equals("create") && skin[1].equals("create")) {
             npcFileConf.set(npc.getName()+".Name",npc.getName());
             npcFileConf.set(npc.getName()+".X",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getX()));
             npcFileConf.set(npc.getName()+".Y",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getY()));
@@ -37,7 +38,7 @@ public class NPCConfigManager {
             npcFileConf.set(npc.getName()+".World",npc.getWorld().getWorld().getName());
             npcFileConf.set(npc.getName() + ".SkinValue", "Kein Skin");
             npcFileConf.set(npc.getName() + ".SkinSignature", "Kein Skin");
-        }else if(skin[0] == "tp" && skin[0] == "tp"){
+        }else if(skin[0].equals("tp") && skin[1].equals("tp")){
             npcFileConf.set(npc.getName()+".X",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getX()));
             npcFileConf.set(npc.getName()+".Y",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getY()));
             npcFileConf.set(npc.getName()+".Z",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getZ()));

@@ -40,8 +40,7 @@ public class NPCManager {
                 exist = true;
             }
         }
-        if (exist == false) {
-            String name = n;
+        if (!exist) {
 
             DedicatedServer server = ((CraftServer) Bukkit.getServer()).getServer();
 
@@ -51,7 +50,7 @@ public class NPCManager {
             EntityPlayer entityPlayer = new EntityPlayer(server, world, gameProfile, null);
             entityPlayer.b(p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
 
-            NPC npc = new NPC(entityPlayer, gameProfile, world, server, name);
+            NPC npc = new NPC(entityPlayer, gameProfile, world, n);
 
             sentNPCPacket(npc.getEntityplayer());
             NPC.add(npc);
@@ -150,7 +149,7 @@ public class NPCManager {
             if (existNPC.getName().equalsIgnoreCase(n)) {
                 String[] npcSkin = getSkin(p, skin);
                 existNPC.getGameProfile().getProperties().clear();
-                if (!(npcSkin[0].equalsIgnoreCase("") && npcSkin[0].equalsIgnoreCase(""))) {
+                if (!(npcSkin[0].equalsIgnoreCase("") && npcSkin[1].equalsIgnoreCase(""))) {
                     existNPC.getGameProfile().getProperties().put("textures", new Property("textures", npcSkin[0], npcSkin[1]));
                 }
                 sentNPCPacket(existNPC.getEntityplayer());
@@ -184,15 +183,15 @@ public class NPCManager {
         Location location = new Location(Bukkit.getWorld(npcData.get("World")), Double.parseDouble(npcData.get("X")), Double.parseDouble(npcData.get("Y")), Double.parseDouble(npcData.get("Z")), Float.parseFloat(npcData.get("Yaw")), Float.parseFloat(npcData.get("Pitch")));
         String name = npcData.get("Name");
         DedicatedServer server = ((CraftServer) Bukkit.getServer()).getServer();
-        WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
+        WorldServer world = ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle();
         GameProfile gameProfile = new GameProfile(UUID.fromString(npcData.get("UUID")), npcData.get("Name"));
 
         EntityPlayer entityPlayer = new EntityPlayer(server, world, gameProfile, null);
         entityPlayer.b(Double.parseDouble(npcData.get("X")), Double.parseDouble(npcData.get("Y")), Double.parseDouble(npcData.get("Z")), Float.parseFloat(npcData.get("Yaw")), Float.parseFloat(npcData.get("Pitch")));
 
-        NPC npc = new NPC(entityPlayer, gameProfile, world, server, name);
+        NPC npc = new NPC(entityPlayer, gameProfile, world, name);
 
-        if (!(npcData.get("SkinValue") == "create" && (npcData.get("SkinSignature")) == "create") || !(npcData.get("SkinValue") == "tp" && (npcData.get("SkinSignature")) == "tp")) {
+        if (!(npcData.get("SkinValue").equals("create") && (npcData.get("SkinSignature")).equals("create")) || !(npcData.get("SkinValue").equals("tp") && (npcData.get("SkinSignature")).equals("tp"))) {
             npc.getGameProfile().getProperties().put("textures", new Property("textures", npcData.get("SkinValue"), npcData.get("SkinSignature")));
         }
         NPC.add(npc);
