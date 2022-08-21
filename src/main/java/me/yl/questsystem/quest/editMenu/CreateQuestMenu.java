@@ -1,5 +1,7 @@
 package me.yl.questsystem.quest.editMenu;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import me.oxolotel.utils.bukkit.menuManager.InventoryMenuManager;
 import me.oxolotel.utils.bukkit.menuManager.menus.*;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryContent;
@@ -7,14 +9,22 @@ import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryItem;
 import me.oxolotel.utils.wrapped.Chat;
 import me.yl.questsystem.listener.MenuClick;
 import me.yl.questsystem.manager.ItemManager;
+import me.yl.questsystem.manager.SkullManager;
 import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.quest.Quest;
 import me.yl.questsystem.quest.QuestConfigManager;
 import me.yl.questsystem.quest.QuestManager;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Base64;
+import java.util.UUID;
+
 
 public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondition, Modifyable, Submenu, CommandModifyable, Loggable {
 
@@ -38,7 +48,7 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
     @Override
     public InventoryContent getContents(Player player) {
         p = player;
-        content.fill(0,54, new InventoryItem(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), ()->{}));
+        content.fill(0,54, new InventoryItem(new ItemManager(Material.GRAY_STAINED_GLASS_PANE).setDisplayName(" ").build(), ()->{}));
         content.addGuiItem(13, new InventoryItem(new ItemManager(Material.DIAMOND_PICKAXE).setDisplayName("Quest erstellen").build(), ()->{}));
         content.addGuiItem(28, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Menge").build(), ()->{
             commandCheck = false;
@@ -49,7 +59,9 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
             awaitCommand(player);
         }));
         content.addGuiItem(37, null);
-        content.addGuiItem(38, new InventoryItem(new ItemManager(Material.ARROW).build(), ()->{}));
+
+        content.addGuiItem(38, new InventoryItem(new SkullManager("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTliZjMyOTJlMTI2YTEwNWI1NGViYTcxM2FhMWIxNTJkNTQxYTFkODkzODgyOWM1NjM2NGQxNzhlZDIyYmYifX19",
+                " ").build(), ()->{}));
         content.addGuiItem(39, new InventoryItem(new ItemManager(Material.GOLD_INGOT).setDisplayName(" ").build(), ()->{}));
         content.addGuiItem(41, new InventoryItem(new ItemManager(Material.RED_BANNER).setDisplayName("Abbrechen").build(), ()->{
             InventoryMenuManager.getInstance().closeMenu(player, CloseReason.RETRUNPREVIOUS);
@@ -135,7 +147,33 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
             return content.get(28).getItem().getItemMeta().hasLore() && content.get(30).getItem().getItemMeta().hasLore();
         }
         return false;
+
+
+
+
     }
 
+
+    public ItemStack getCustomSkull(String base64) {
+
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+        if (base64.isEmpty()) return head;
+
+        SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
+        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+
+        profile.getProperties().put("textures", new Property("textures", base64));
+
+        try {
+            Method mtd = skullMeta.getClass().getDeclaredMethod("setProfile", GameProfile.class);
+            mtd.setAccessible(true);
+            mtd.invoke(skullMeta, profile);
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException ex) {
+            ex.printStackTrace();
+        }
+
+        head.setItemMeta(skullMeta);
+        return head;
+    }
 
 }
