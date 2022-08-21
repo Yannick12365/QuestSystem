@@ -11,6 +11,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class main extends JavaPlugin {
+
+    public static final String PREFIX = "§7§l[§b§lQuest§7§l]";
+
     @Override
     public void onEnable() {
         getCommand("Quest").setExecutor(new Quest());

@@ -50,8 +50,9 @@ public class QuestConfigManager {
                 int itemAmount = questFileConf.getInt(key+"."+subkey +".ItemAmount");
                 double reward = questFileConf.getDouble(key+"."+subkey+ ".Reward");
                 int questid = Integer.parseInt(subkey);
+                boolean active = questFileConf.getBoolean(key + "." +subkey +".Active");
 
-                questArrayList.add(new Quest(item,itemAmount,reward, npcFound,questid));
+                questArrayList.add(new Quest(item,itemAmount,reward, npcFound,questid, active));
             }
             new QuestManager().getQuestList().put(npcFound, questArrayList);
         }
@@ -61,6 +62,7 @@ public class QuestConfigManager {
         questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Item",q.getItem().getType().toString());
         questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".ItemAmount",q.getItemAmount());
         questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Reward",q.getReward());
+        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Active",q.getActive());
 
         try {
             questFileConf.save(questFile);
@@ -71,4 +73,23 @@ public class QuestConfigManager {
             throw new RuntimeException(e);
         }
     }
+    public void updateActiveQuestConfig(Quest q){
+        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Active",q.getActive());
+        try {
+            questFileConf.save(questFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void removeQuestConfig(Quest q){
+        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID(), null);
+        try {
+            questFileConf.save(questFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
 }

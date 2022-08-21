@@ -11,6 +11,7 @@ import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.quest.Quest;
 import me.yl.questsystem.quest.QuestConfigManager;
 import me.yl.questsystem.quest.QuestManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -58,8 +59,9 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
                 int menge = Integer.parseInt(content.get(28).getItem().getItemMeta().getLore().get(0));
                 double preis = Double.parseDouble(content.get(30).getItem().getItemMeta().getLore().get(0));
                 Quest q;
-                if (new QuestManager().getQuestList().get(npc).size() == 0){
-                    q = new Quest(content.get(37).getItem(), menge, preis, npc, 1);
+                Bukkit.broadcastMessage("----------- T1");
+                if (new QuestManager().getQuestList().get(npc) == null || new QuestManager().getQuestList().get(npc).size() == 0){
+                    q = new Quest(content.get(37).getItem(), menge, preis, npc, 1, true);
                 }else {
                     q = new Quest(content.get(37).getItem(), menge, preis, npc);
                 }
