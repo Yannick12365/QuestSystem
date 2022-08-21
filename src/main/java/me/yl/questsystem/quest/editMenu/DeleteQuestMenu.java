@@ -24,9 +24,6 @@ public class DeleteQuestMenu extends CustomMenu implements SlotCondition, Closea
     private Quest q;
     private NPC npc;
 
-    /**
-     * @param size the amount of slots the Menu will need. Will be filled up to n*9
-     */
     public DeleteQuestMenu(int size, Quest q, NPC npc) {
         super(size);
         setTitle("Löschen bestätigen");

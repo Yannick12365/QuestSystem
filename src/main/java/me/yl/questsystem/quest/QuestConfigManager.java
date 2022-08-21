@@ -92,4 +92,14 @@ public class QuestConfigManager {
 
     }
 
+    public void updateQuestConfig(Quest q){
+        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".ItemAmount",q.getItemAmount());
+        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Reward",q.getReward());
+        try {
+            questFileConf.save(questFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

@@ -11,23 +11,28 @@ import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.quest.Quest;
 import me.yl.questsystem.quest.QuestConfigManager;
 import me.yl.questsystem.quest.QuestManager;
+import me.yl.questsystem.main;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondition, Modifyable, Submenu, CommandModifyable, Loggable {
+import java.util.ArrayList;
+
+public class ReeditQuestMenu extends CustomMenu implements Closeable, SlotCondition, Modifyable, Submenu, CommandModifyable, Loggable{
 
     private boolean commandCheck;
     private final InventoryContent content;
     private Player p;
     private final NPC npc;
+    private Quest quest;
 
-    public CreateQuestMenu(int size, NPC npc) {
+    public ReeditQuestMenu(int size, NPC npc, Quest quest) {
         super(size);
-        setTitle("Create Quest");
+        setTitle("Quest bearbeiten");
         content = new InventoryContent();
         this.npc = npc;
+        this.quest = quest;
     }
 
     @Override
@@ -38,36 +43,28 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
     @Override
     public InventoryContent getContents(Player player) {
         p = player;
+
         content.fill(0,54, new InventoryItem(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), ()->{}));
-        content.addGuiItem(13, new InventoryItem(new ItemManager(Material.DIAMOND_PICKAXE).setDisplayName("Quest erstellen").build(), ()->{}));
-        content.addGuiItem(28, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Menge").build(), ()->{
+        content.addGuiItem(13, ()->{},Material.BLUE_DYE,"§9§lBearbeiten");
+        content.addGuiItem(28, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Menge").setLore(String.valueOf(quest.getItemAmount())).build(), ()->{
             commandCheck = false;
             awaitCommand(player);
         }));
-        content.addGuiItem(30, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Preis").build(), ()->{
+        content.addGuiItem(30, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Preis").setLore(String.valueOf(quest.getReward())).build(), ()->{
             commandCheck = true;
             awaitCommand(player);
         }));
-        content.addGuiItem(37, null);
+        content.addGuiItem(37, new InventoryItem(quest.getItem(), ()->{}));
         content.addGuiItem(38, new InventoryItem(new ItemManager(Material.ARROW).build(), ()->{}));
         content.addGuiItem(39, new InventoryItem(new ItemManager(Material.GOLD_INGOT).setDisplayName(" ").build(), ()->{}));
         content.addGuiItem(41, new InventoryItem(new ItemManager(Material.RED_BANNER).setDisplayName("Abbrechen").build(), ()->{
             InventoryMenuManager.getInstance().closeMenu(player, CloseReason.RETRUNPREVIOUS);
         }));
         content.addGuiItem(43, new InventoryItem(new ItemManager(Material.GREEN_BANNER).setDisplayName("Speichern").build(), ()->{
-            if(checkQuestInput()){
-                int menge = Integer.parseInt(content.get(28).getItem().getItemMeta().getLore().get(0));
-                double preis = Double.parseDouble(content.get(30).getItem().getItemMeta().getLore().get(0));
-                Quest q;
-                if (new QuestManager().getQuestList().get(npc) == null || new QuestManager().getQuestList().get(npc).size() == 0){
-                    q = new Quest(content.get(37).getItem(), menge, preis, npc, 1, true);
-                }else {
-                    q = new Quest(content.get(37).getItem(), menge, preis, npc);
-                }
-                    new QuestConfigManager().writeQuesttConfig(q);
-                    InventoryMenuManager.getInstance().closeMenu(player, CloseReason.RETRUNPREVIOUS);
-                    InventoryMenuManager.getInstance().getOpenMenu(player).refresh();
-            }
+            new QuestManager().changeQuestAmounts(npc, quest, Integer.parseInt(content.get(28).getItem().getItemMeta().getLore().get(0)), Double.parseDouble(content.get(30).getItem().getItemMeta().getLore().get(0)));
+            Chat.sendSuccessMessage(main.PREFIX, me.oxolotel.utils.wrapped.player.Player.of(p),"§cQuest erfolgreich bearbeitet");
+            InventoryMenuManager.getInstance().closeMenu(player, CloseReason.RETRUNPREVIOUS);
+            InventoryMenuManager.getInstance().getOpenMenu(player).refresh();
         }));
 
         return content;
@@ -75,7 +72,7 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
 
     @Override
     public boolean isClickAllowed(Player player, int i) {
-        return i == 37 || i == 41 || i == 28 || i == 30 || i == 43;
+        return i == 41 || i == 28 || i == 30 || i == 43;
     }
 
     @Override
@@ -90,7 +87,7 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
     @Override
     public String getCommandHelp() {
         if (commandCheck){
-           return  "Gib /QuestPreis <Preis> ein um den Preis festzulegen";
+            return  "Gib /QuestPreis <Preis> ein um den Preis festzulegen";
         }else{
             return  "Gib /QuestMenge <Menge> ein um die Menge festzulegen";
         }
@@ -99,10 +96,6 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
     @Override
     public void processCommand(String[] strings) {
         if (commandCheck){
-            if (new MenuClick().getItemMap().containsKey(p.getUniqueId())){
-                content.addGuiItem(37,new InventoryItem(new MenuClick().getItem(p),()->{}));
-                new MenuClick().removePlayer(p);
-            }
             if (new QuestManager().checkSignLorePreis(strings[0])) {
                 strings[0] = strings[0].replace(",", ".");
                 content.addGuiItem(30, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Preis").setLore(strings).build(), () -> {
@@ -114,10 +107,6 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
                         "Yo Du was gibst du da ein bist du dumm das ist doch kein Preis?");
             }
         }else{
-            if (new MenuClick().getItemMap().containsKey(p.getUniqueId())){
-                content.addGuiItem(37,new InventoryItem(new MenuClick().getItem(p),()->{}));
-                new MenuClick().removePlayer(p);
-            }
             if (new QuestManager().checkSignLoreMenge(strings[0])) {
                 content.addGuiItem(28, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Menge").setLore(strings).build(), () -> {
                     commandCheck = false;
@@ -129,13 +118,4 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
             }
         }
     }
-
-    public boolean checkQuestInput(){
-        if(content.get(37) != null || content.get(37).getItem().getType() != Material.AIR){
-            return content.get(28).getItem().getItemMeta().hasLore() && content.get(30).getItem().getItemMeta().hasLore();
-        }
-        return false;
-    }
-
-
 }

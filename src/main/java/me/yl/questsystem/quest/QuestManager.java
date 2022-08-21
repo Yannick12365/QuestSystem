@@ -123,4 +123,20 @@ public class QuestManager {
         new QuestConfigManager().removeQuestConfig(q);
 
     }
+
+    public void changeQuestAmounts(NPC npc, Quest q, int amount, double reward){
+        ArrayList<Quest> ql = new ArrayList<>();
+
+        for(Quest tempQ:questList.get(npc)) {
+            if (tempQ.getQuestID() == q.getQuestID()){
+                q.setItemAmount(amount);
+                q.setReward(reward);
+                ql.add(q);
+            }else {
+                ql.add(tempQ);
+            }
+        }
+        questList.put(npc, ql);
+        new QuestConfigManager().updateQuestConfig(q);
+    }
 }

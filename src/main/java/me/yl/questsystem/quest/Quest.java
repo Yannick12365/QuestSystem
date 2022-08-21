@@ -6,8 +6,8 @@ import org.bukkit.inventory.ItemStack;
 public class Quest {
 
     private final ItemStack item;
-    private final int itemAmount;
-    private final double reward;
+    private int itemAmount;
+    private double reward;
     private NPC npc;
     private final int questID;
     private boolean active;
@@ -55,5 +55,13 @@ public class Quest {
 
     public boolean getActive() {
         return active;
+    }
+
+    public void setItemAmount(int i){
+        itemAmount = i;
+    }
+
+    public void setReward(double d){
+        reward = d;
     }
 }
