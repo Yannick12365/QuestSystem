@@ -21,6 +21,7 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
     private static NPC npc;
     private static int guiSize;
     private final ArrayList<Integer> createSlotList;
+    private Player p;
 
     public EditQuestMenu(int size, NPC npc) {
         super(size);
@@ -32,6 +33,7 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
 
     @Override
     public InventoryContent getContents(Player player) {
+        p = player;
         InventoryContent c = new InventoryContent();
         c.fill(0,guiSize, new InventoryItem(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), ()->{}));
         int slots = 0;
@@ -104,7 +106,7 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
     @Override
     public CustomMenu getSubmenu(int i) {
         if(createSlotList.contains(i)){
-            return new CreateQuestMenu(54, npc);
+            return new CreateQuestMenu(54, npc, p);
         }
        return null;
     }

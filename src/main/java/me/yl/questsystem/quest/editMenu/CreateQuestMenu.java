@@ -33,16 +33,17 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
     private Player p;
     private final NPC npc;
 
-    public CreateQuestMenu(int size, NPC npc) {
+    public CreateQuestMenu(int size, NPC npc, Player p) {
         super(size);
         setTitle("Create Quest");
         content = new InventoryContent();
         this.npc = npc;
+        new MenuClick().setCheckItem(false, p);
     }
 
     @Override
     public void onClose(Player player, ItemStack[] itemStacks, CloseReason closeReason) {
-
+        new MenuClick().removeItemPlayer(player);
     }
 
     @Override
@@ -87,8 +88,12 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
 
     @Override
     public boolean isClickAllowed(Player player, int i) {
-        return i == 37 || i == 41 || i == 28 || i == 30 || i == 43;
+        if (i == 37 || i == 41 || i == 28 || i == 30){
+            return true;
+        }
+        return MenuClick.getCheckItem().get(player.getUniqueId()) && i == 43;
     }
+
 
     @Override
     public String getCommand() {
@@ -111,7 +116,7 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
     @Override
     public void processCommand(String[] strings) {
         if (commandCheck){
-            if (new MenuClick().getItemMap().containsKey(p.getUniqueId())){
+            if (MenuClick.getItemMap().containsKey(p.getUniqueId())){
                 content.addGuiItem(37,new InventoryItem(new MenuClick().getItem(p),()->{}));
                 new MenuClick().removePlayer(p);
             }
@@ -126,7 +131,7 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
                         "Yo Du was gibst du da ein bist du dumm das ist doch kein Preis?");
             }
         }else{
-            if (new MenuClick().getItemMap().containsKey(p.getUniqueId())){
+            if (MenuClick.getItemMap().containsKey(p.getUniqueId())){
                 content.addGuiItem(37,new InventoryItem(new MenuClick().getItem(p),()->{}));
                 new MenuClick().removePlayer(p);
             }
@@ -147,33 +152,5 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
             return content.get(28).getItem().getItemMeta().hasLore() && content.get(30).getItem().getItemMeta().hasLore();
         }
         return false;
-
-
-
-
     }
-
-
-    public ItemStack getCustomSkull(String base64) {
-
-        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
-        if (base64.isEmpty()) return head;
-
-        SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
-        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
-
-        profile.getProperties().put("textures", new Property("textures", base64));
-
-        try {
-            Method mtd = skullMeta.getClass().getDeclaredMethod("setProfile", GameProfile.class);
-            mtd.setAccessible(true);
-            mtd.invoke(skullMeta, profile);
-        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException ex) {
-            ex.printStackTrace();
-        }
-
-        head.setItemMeta(skullMeta);
-        return head;
-    }
-
 }

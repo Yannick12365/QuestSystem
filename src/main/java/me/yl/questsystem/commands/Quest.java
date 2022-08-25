@@ -1,12 +1,15 @@
 package me.yl.questsystem.commands;
 
+import me.yl.questsystem.manager.AnvilMenuManager;
 import me.yl.questsystem.manager.ChatManager;
 
 import me.yl.questsystem.npc.NPCManager;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 
 public class Quest implements CommandExecutor {
@@ -31,6 +34,16 @@ public class Quest implements CommandExecutor {
                 }else if (args[1].equalsIgnoreCase("skin") && args.length == 4) {
                     npc.changeNPCSkin(player, args[2], args[3]);
                 }
+            } else if (args[0].equalsIgnoreCase("test")) {
+                ItemStack[] items = new ItemStack[3];
+                items[0] = new ItemStack(Material.COBBLESTONE);
+                items[2] = new ItemStack(Material.COBBLESTONE);
+
+                new AnvilMenuManager().createanvilMenu(player, items, "Knecht");
+
+            } else if (args[0].equalsIgnoreCase("test2")) {
+                player.sendMessage(new AnvilMenuManager().getItemList().get(player.getUniqueId()).toString());
+                new AnvilMenuManager().removeItem(player);
             }
         }else {
             helpText(player);
