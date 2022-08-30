@@ -38,12 +38,10 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
         setTitle("Create Quest");
         content = new InventoryContent();
         this.npc = npc;
-        new MenuClick().setCheckItem(false, p);
     }
 
     @Override
     public void onClose(Player player, ItemStack[] itemStacks, CloseReason closeReason) {
-        new MenuClick().removeItemPlayer(player);
     }
 
     @Override
@@ -88,10 +86,10 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
 
     @Override
     public boolean isClickAllowed(Player player, int i) {
-        if (i == 37 || i == 41 || i == 28 || i == 30){
+        if (i == 37 || i == 41 || i == 28 || i == 30 || i == 43){
             return true;
         }
-        return MenuClick.getCheckItem().get(player.getUniqueId()) && i == 43;
+        return false;
     }
 
 
@@ -142,15 +140,22 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
                 }));
             }else {
                 Chat.sendErrorMessage("Questsystem", me.oxolotel.utils.wrapped.player.Player.of(p),
-                        "Yo Du was gibst du da ein bist du dumm das ist doch kein Menge?");
+                        "Yo Du was gibst du da ein bist du dumm das ist doch keine Menge?");
             }
         }
     }
 
     public boolean checkQuestInput(){
-        if(content.get(37) != null || content.get(37).getItem().getType() != Material.AIR){
-            return content.get(28).getItem().getItemMeta().hasLore() && content.get(30).getItem().getItemMeta().hasLore();
+        if (new MenuClick().getItem(p) != null) {
+            content.addGuiItem(37, new InventoryItem(new MenuClick().getItem(p), () -> {}));
+            new MenuClick().removePlayer(p);
+
+            if (content.get(37) != null || content.get(37).getItem().getType() != Material.AIR) {
+                return content.get(28).getItem().getItemMeta().hasLore() && content.get(30).getItem().getItemMeta().hasLore();
+            }
         }
         return false;
     }
+
+
 }
