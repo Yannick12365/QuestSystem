@@ -2,7 +2,6 @@ package me.yl.questsystem.listener;
 
 import me.oxolotel.utils.bukkit.menuManager.events.implement.log.MenuLogModifyEvent;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

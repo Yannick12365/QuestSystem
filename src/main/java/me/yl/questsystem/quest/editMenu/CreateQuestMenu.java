@@ -1,12 +1,11 @@
 package me.yl.questsystem.quest.editMenu;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import me.oxolotel.utils.bukkit.menuManager.InventoryMenuManager;
 import me.oxolotel.utils.bukkit.menuManager.menus.*;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryContent;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryItem;
 import me.oxolotel.utils.wrapped.Chat;
+
 import me.yl.questsystem.listener.MenuClick;
 import me.yl.questsystem.manager.ItemManager;
 import me.yl.questsystem.manager.SkullManager;
@@ -14,17 +13,10 @@ import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.quest.Quest;
 import me.yl.questsystem.quest.QuestConfigManager;
 import me.yl.questsystem.quest.QuestManager;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Base64;
-import java.util.UUID;
-
 
 public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondition, Modifyable, Submenu, CommandModifyable, Loggable {
 

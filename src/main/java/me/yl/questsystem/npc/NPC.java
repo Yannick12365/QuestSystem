@@ -1,7 +1,7 @@
 package me.yl.questsystem.npc;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.MinecraftServer;
+
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.server.level.WorldServer;
 

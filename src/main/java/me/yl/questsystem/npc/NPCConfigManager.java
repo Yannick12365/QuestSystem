@@ -1,6 +1,7 @@
 package me.yl.questsystem.npc;
 
 import me.yl.questsystem.main;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -8,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 public class NPCConfigManager {

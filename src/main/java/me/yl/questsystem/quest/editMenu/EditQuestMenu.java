@@ -4,16 +4,17 @@ import me.oxolotel.utils.bukkit.menuManager.InventoryMenuManager;
 import me.oxolotel.utils.bukkit.menuManager.menus.*;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryContent;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryItem;
+
 import me.yl.questsystem.manager.ItemManager;
 import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.quest.Quest;
 import me.yl.questsystem.quest.QuestManager;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideable, Pageable {
 

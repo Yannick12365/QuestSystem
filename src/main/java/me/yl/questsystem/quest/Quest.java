@@ -1,6 +1,7 @@
 package me.yl.questsystem.quest;
 
 import me.yl.questsystem.npc.NPC;
+
 import org.bukkit.inventory.ItemStack;
 
 public class Quest {

@@ -2,6 +2,7 @@ package me.yl.questsystem.manager;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;

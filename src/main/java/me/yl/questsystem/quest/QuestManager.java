@@ -2,8 +2,6 @@ package me.yl.questsystem.quest;
 
 import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.npc.NPCManager;
-import org.bukkit.Bukkit;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;

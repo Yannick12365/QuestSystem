@@ -2,8 +2,8 @@ package me.yl.questsystem.commands;
 
 import me.yl.questsystem.manager.AnvilMenuManager;
 import me.yl.questsystem.manager.ChatManager;
-
 import me.yl.questsystem.npc.NPCManager;
+
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
