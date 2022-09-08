@@ -18,12 +18,8 @@ public class QuestManager {
     }
 
     public int countNPCQuests(String n) {
-        NPC npcFound = null;
-        for (NPC existNPC : new NPCManager().getNPClist()) {
-            if (existNPC.getName().equalsIgnoreCase(n)) {
-                npcFound = existNPC;
-            }
-        }
+        NPC npcFound = new NPCManager().checkForNPC(n);
+
         if (npcFound != null) {
             if (questList.get(npcFound) != null) {
                 return questList.get(npcFound).size();
@@ -33,12 +29,8 @@ public class QuestManager {
     }
 
     public Quest getNPCQuestByID(String n,int id){
-        NPC npcFound = null;
-        for (NPC existNPC : new NPCManager().getNPClist()) {
-            if (existNPC.getName().equalsIgnoreCase(n)) {
-                npcFound = existNPC;
-            }
-        }
+        NPC npcFound = new NPCManager().checkForNPC(n);
+
         if(questList.get(npcFound) != null) {
             ArrayList<Quest> quests = questList.get(npcFound);
             for (Quest q : quests) {
@@ -52,12 +44,8 @@ public class QuestManager {
 
     public ArrayList<Quest> getNPCQuests(String n) {
 
-        NPC npcFound = null;
-        for (NPC existNPC : new NPCManager().getNPClist()) {
-            if (existNPC.getName().equalsIgnoreCase(n)) {
-                npcFound = existNPC;
-            }
-        }
+        NPC npcFound = new NPCManager().checkForNPC(n);
+
         if (npcFound != null) {
             if (questList.get(npcFound) != null) {
                 return questList.get(npcFound);
@@ -81,12 +69,8 @@ public class QuestManager {
 
     public void changeActiveStatus(boolean active, String n, int questID){
         Quest q = getNPCQuestByID(n, questID);
-        NPC npcFound = null;
-        for (NPC existNPC : new NPCManager().getNPClist()) {
-            if (existNPC.getName().equalsIgnoreCase(n)) {
-                npcFound = existNPC;
-            }
-        }
+        NPC npcFound = new NPCManager().checkForNPC(n);
+
         ArrayList<Quest> ql = new ArrayList<>();
 
         for(Quest tempQ:questList.get(npcFound)) {

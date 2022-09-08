@@ -32,15 +32,10 @@ public class QuestConfigManager {
     public void readQuestConfig(){
         Set<String> keyList =  questFileConf.getKeys(false);
         ArrayList<Quest> questArrayList = new ArrayList<>();
-        NPC npcFound = null;
 
         for (String key:keyList){
-            for(NPC npc:new NPCManager().getNPClist()){
-                if (npc.getName().equals(key)){
-                    npcFound = npc;
-                    break;
-                }
-            }
+            NPC npcFound = new NPCManager().checkForNPC(key);
+
             if (npcFound == null){
                 return;
             }
@@ -89,7 +84,6 @@ public class QuestConfigManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void updateQuestConfig(Quest q){
