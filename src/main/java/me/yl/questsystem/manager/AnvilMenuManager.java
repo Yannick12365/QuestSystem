@@ -13,9 +13,10 @@ import java.util.ArrayList;
 public class AnvilMenuManager implements Listener {
     public static final ArrayList<Inventory> invList = new ArrayList<>();
 
-    public void createAnvilMenu(Player p, ItemStack[] items, String n) {
+    public void createAnvilMenu(Player p, ItemStack item, String n) {
         Inventory inv = Bukkit.createInventory(p, InventoryType.ANVIL, n);
-        inv.setContents(items);
+        inv.setItem(0, item);
+        inv.setItem(2, item);
         invList.add(inv);
         p.openInventory(inv);
     }

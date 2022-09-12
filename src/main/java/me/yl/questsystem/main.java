@@ -5,7 +5,7 @@ import com.comphenix.protocol.ProtocolManager;
 import me.oxolotel.utils.bukkit.menuManager.InventoryMenuManager;
 import me.oxolotel.utils.wrapped.module.ModuleManager;
 
-import me.yl.questsystem.commands.Quest;
+import me.yl.questsystem.commands.QuestCommand;
 import me.yl.questsystem.listener.MenuClick;
 import me.yl.questsystem.listener.PlayerJoin;
 import me.yl.questsystem.manager.AnvilMenuManager;
@@ -22,7 +22,7 @@ public final class main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getCommand("Quest").setExecutor(new Quest());
+        getCommand("Quest").setExecutor(new QuestCommand());
 
         ModuleManager.loadModule(ModuleManager.getPluginModuleByClass(InventoryMenuManager.class));
 

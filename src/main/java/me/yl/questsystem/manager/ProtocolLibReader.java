@@ -7,13 +7,21 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import me.oxolotel.utils.bukkit.menuManager.InventoryMenuManager;
+import me.oxolotel.utils.bukkit.menuManager.implement.MenuView;
+import me.oxolotel.utils.bukkit.menuManager.menus.CustomMenu;
+import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryContent;
+import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryItem;
 import me.yl.questsystem.main;
 import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.npc.NPCManager;
+import me.yl.questsystem.quest.Quest;
 import me.yl.questsystem.quest.QuestManager;
 import me.yl.questsystem.quest.editMenu.EditQuestMenu;
+import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.InvocationTargetException;
@@ -58,11 +66,15 @@ public class ProtocolLibReader {
         }
     }
 
+    private static HashMap<UUID, CustomMenu> playerMenus = new HashMap<>();
 
-    private HashMap<UUID,String> resultNames = new HashMap<>();
+    public void addCustomMenu(Player p ,CustomMenu menu){
+        playerMenus.put(p.getUniqueId(),menu);
+    }
 
-    public HashMap<UUID,String> getAnvilInput(){
-        return resultNames;
+    public void openMenuAgain(Player p, ItemStack itemStack, String s){
+        playerMenus.get(p.getUniqueId()).getContents(p).addGuiItem(28, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Menge").setLore(String.valueOf(s)).build(), ()->{ItemStack item = new ItemManager(itemStack.getType()).setDisplayName(" ").build();new AnvilMenuManager().createAnvilMenu(p ,item,"Edit Quest Menge");}));
+        InventoryMenuManager.getInstance().openMenu(p,playerMenus.get(p.getUniqueId()));
     }
 
     public void readWindowClickPacket(ProtocolManager pm, main main){
@@ -84,8 +96,9 @@ public class ProtocolLibReader {
 
                         if (packet.getIntegers().read(2) == 2) {
 
-                            event.getPlayer().sendMessage(packet.getItemModifier().read(0).getItemMeta().getDisplayName());
-                            resultNames.put(event.getPlayer().getUniqueId(),packet.getItemModifier().read(0).getItemMeta().getDisplayName());
+                            ItemStack item = packet.getItemModifier().read(0);
+                            event.getPlayer().sendMessage(item.getItemMeta().getDisplayName());
+
 
                             PacketContainer container = new PacketContainer(PacketType.Play.Server.CLOSE_WINDOW);
                             try {
@@ -93,6 +106,18 @@ public class ProtocolLibReader {
                             } catch (InvocationTargetException e) {
                                 e.printStackTrace();
                             }
+
+                            new BukkitRunnable() {
+                                int counter = 0;
+                                @Override
+                                public void run() {
+                                    if (counter == 1){
+                                        openMenuAgain(event.getPlayer(), item, item.getItemMeta().getDisplayName());
+                                        cancel();
+                                    }
+                                    counter++;
+                                }
+                            }.runTaskTimer(main, 0, 1);
                         }
                     }
                 }
