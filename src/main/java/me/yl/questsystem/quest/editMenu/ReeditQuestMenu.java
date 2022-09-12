@@ -1,11 +1,15 @@
 package me.yl.questsystem.quest.editMenu;
 
 import me.oxolotel.utils.bukkit.menuManager.InventoryMenuManager;
+import me.oxolotel.utils.bukkit.menuManager.implement.MenuView;
 import me.oxolotel.utils.bukkit.menuManager.menus.*;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryContent;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryItem;
+import me.oxolotel.utils.general.ReflectionUtils;
+import me.oxolotel.utils.general.TrippleWrapper;
 import me.oxolotel.utils.wrapped.Chat;
 
+import me.oxolotel.utils.wrapped.schedule.Task;
 import me.yl.questsystem.manager.AnvilMenuManager;
 import me.yl.questsystem.manager.ItemManager;
 import me.yl.questsystem.manager.ProtocolLibReader;
@@ -18,14 +22,22 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 
 public class ReeditQuestMenu extends CustomMenu implements Closeable, SlotCondition, Modifyable, Submenu, Loggable{
 
-    private final InventoryContent content;
+    private InventoryContent content;
     private Player p;
-    private final NPC npc;
+    private  NPC npc;
     private Quest quest;
+    private static HashMap<UUID, List<CustomMenu>> openMenus = new HashMap<>();
+
 
     public ReeditQuestMenu(int size, NPC npc, Quest quest) {
         super(size);
@@ -33,11 +45,18 @@ public class ReeditQuestMenu extends CustomMenu implements Closeable, SlotCondit
         content = new InventoryContent();
         this.npc = npc;
         this.quest = quest;
+
+    }
+
+    public ReeditQuestMenu(){
+        super(54);
     }
 
     @Override
     public void onClose(Player player, ItemStack[] itemStacks, CloseReason closeReason) {
-
+        if (closeReason != CloseReason.CHANGEMENU){
+            openMenus.remove(p.getUniqueId());
+        }
     }
 
     @Override
@@ -48,12 +67,17 @@ public class ReeditQuestMenu extends CustomMenu implements Closeable, SlotCondit
         content.addGuiItem(13, ()->{},Material.BLUE_DYE,"§9§lBearbeiten");
         content.addGuiItem(28, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Menge").setLore(String.valueOf(quest.getItemAmount())).build(), ()->{
             ItemStack item = new ItemManager(quest.getItem().getType()).setDisplayName(" ").build();
+            saveMenus(p);
+            InventoryMenuManager.getInstance().closeMenu(p,CloseReason.CHANGEMENU);
+
+
             new AnvilMenuManager().createAnvilMenu(player ,item,"Edit Quest Menge");
         }));
         content.addGuiItem(30, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Preis").setLore(String.valueOf(quest.getReward())).build(), ()->{
-            ItemStack item = new ItemManager(quest.getItem().getType()).setDisplayName(" ").build();
-            InventoryMenuManager.getInstance().closeMenu(player, CloseReason.CHANGEMENU);
-            new AnvilMenuManager().createAnvilMenu(player ,item,"Edit Quest Preis");
+            ItemStack item = new ItemManager(Material.GOLD_INGOT).setDisplayName(" ").build();
+            saveMenus(p);
+            InventoryMenuManager.getInstance().closeMenu(p,CloseReason.CHANGEMENU);
+           new AnvilMenuManager().createAnvilMenu(player ,item,"Edit Quest Preis");
         }));
         content.addGuiItem(37, new InventoryItem(quest.getItem(), ()->{}));
         content.addGuiItem(38, new InventoryItem(new ItemManager(Material.ARROW).build(), ()->{}));
@@ -68,7 +92,7 @@ public class ReeditQuestMenu extends CustomMenu implements Closeable, SlotCondit
             InventoryMenuManager.getInstance().getOpenMenu(player).refresh();
         }));
 
-        new ProtocolLibReader().addCustomMenu(player, this);
+
         return content;
     }
 
@@ -76,4 +100,17 @@ public class ReeditQuestMenu extends CustomMenu implements Closeable, SlotCondit
     public boolean isClickAllowed(Player player, int i) {
         return i == 41 || i == 28 || i == 30 || i == 43;
     }
+
+    public void saveMenus(Player p){
+        MenuView a = InventoryMenuManager.getInstance().getOpenMenu(p);
+        @SuppressWarnings("unchecked")
+        LinkedList<TrippleWrapper<CustomMenu, InventoryContent, Task>> tempOpenMenus = (LinkedList<TrippleWrapper<CustomMenu, InventoryContent, Task>>) ReflectionUtils.accessField(MenuView.class, a, "openMenus", LinkedList.class);
+        List<CustomMenu> t = tempOpenMenus.stream().map(TrippleWrapper::getValue1).toList();
+        openMenus.put(p.getUniqueId(), t);
+    }
+
+    public static HashMap<UUID, List<CustomMenu>> getOpenMenus() {
+        return openMenus;
+    }
+
 }

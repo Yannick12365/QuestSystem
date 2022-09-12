@@ -16,7 +16,6 @@ public class AnvilMenuManager implements Listener {
     public void createAnvilMenu(Player p, ItemStack item, String n) {
         Inventory inv = Bukkit.createInventory(p, InventoryType.ANVIL, n);
         inv.setItem(0, item);
-        inv.setItem(2, item);
         invList.add(inv);
         p.openInventory(inv);
     }
