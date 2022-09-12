@@ -11,6 +11,6 @@ public class PlayerJoin implements Listener{
     @EventHandler
     public void joinEvent(PlayerJoinEvent event){
         new NPCManager().sentJoinPacket(event.getPlayer());
-        new PacketReader(event.getPlayer()).inject();
+        //new PacketReader(event.getPlayer()).inject();
     }
 }

@@ -4,49 +4,53 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
 
 public class AnvilMenuManager implements Listener {
     public static final ArrayList<Inventory> invList = new ArrayList<>();
-    public static HashMap<UUID,ItemStack> itemList = new HashMap<>();
 
-    public void createanvilMenu(Player p, ItemStack[] items, String n){
-        Inventory inv = Bukkit.createInventory(null, InventoryType.ANVIL, n);
+    public void createAnvilMenu(Player p, ItemStack[] items, String n) {
+        Inventory inv = Bukkit.createInventory(p, InventoryType.ANVIL, n);
         inv.setContents(items);
-
         invList.add(inv);
         p.openInventory(inv);
     }
 
-    public HashMap<UUID,ItemStack> getItemList(){
-        return itemList;
+    public ArrayList<Inventory> getInvList(){
+        return invList;
     }
 
-   public void removeItem(Player p){
-        itemList.remove(p.getUniqueId());
-   }
+    public void removeInv(Inventory inv){
+        invList.remove(inv);
+    }
 
-    @EventHandler
-    public void clickAnvilMenuListener(InventoryClickEvent e){
-        for (Inventory inv:invList){
-            if (inv != e.getClickedInventory()){
-                return;
+    public Inventory checkForInv(Inventory inv){
+        for (Inventory invFound:invList){
+            if (invFound == inv){
+                return invFound;
             }
         }
-        //e.setCancelled(true);
+        return null;
+    }
 
-        if (e.getSlot() != 2){
-            return;
+    @EventHandler
+    public void clickEvent(InventoryClickEvent e){
+        if (new AnvilMenuManager().checkForInv(e.getClickedInventory()) != null){
+            e.setCancelled(true);
+            if (e.getSlot() == 2) {
+                new AnvilMenuManager().removeInv(e.getInventory());
+            }
         }
-        invList.remove(e.getClickedInventory());
-        itemList.put(e.getWhoClicked().getUniqueId(),e.getClickedInventory().getItem(2));
-        e.getWhoClicked().closeInventory();
+    }
+
+    @EventHandler
+    public void closeEvent(InventoryCloseEvent e){
+        if (new AnvilMenuManager().checkForInv(e.getInventory()) != null){
+            new AnvilMenuManager().removeInv(e.getInventory());
+        }
     }
 }

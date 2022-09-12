@@ -9,6 +9,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class PlayerQuit implements Listener{
     @EventHandler
     public void quitEvent(PlayerQuitEvent event){
-        new PacketReader(event.getPlayer()).uninject();
+        //new PacketReader(event.getPlayer()).uninject();
     }
 }

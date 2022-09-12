@@ -1,5 +1,7 @@
 package me.yl.questsystem;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import me.oxolotel.utils.bukkit.menuManager.InventoryMenuManager;
 import me.oxolotel.utils.wrapped.module.ModuleManager;
 
@@ -7,6 +9,7 @@ import me.yl.questsystem.commands.Quest;
 import me.yl.questsystem.listener.MenuClick;
 import me.yl.questsystem.listener.PlayerJoin;
 import me.yl.questsystem.manager.AnvilMenuManager;
+import me.yl.questsystem.manager.ProtocolLibReader;
 import me.yl.questsystem.npc.NPCConfigManager;
 import me.yl.questsystem.quest.QuestConfigManager;
 
@@ -32,6 +35,10 @@ public final class main extends JavaPlugin {
 
         new QuestConfigManager().createConfigConfiguration(this);
         new QuestConfigManager().readQuestConfig();
+
+        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+        new ProtocolLibReader().readNPCClickPacket(protocolManager, this);
+        new ProtocolLibReader().readWindowClickPacket(protocolManager, this);
     }
 
     @Override
