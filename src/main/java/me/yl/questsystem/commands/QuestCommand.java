@@ -1,8 +1,10 @@
 package me.yl.questsystem.commands;
 
+import me.oxolotel.utils.bukkit.menuManager.InventoryMenuManager;
 import me.yl.questsystem.manager.ChatManager;
 import me.yl.questsystem.npc.NPCManager;
 
+import me.yl.questsystem.quest.playerMenu.NPCQuestMenu;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
