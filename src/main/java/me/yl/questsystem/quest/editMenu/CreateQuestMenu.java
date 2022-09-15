@@ -1,13 +1,19 @@
 package me.yl.questsystem.quest.editMenu;
 
 import me.oxolotel.utils.bukkit.menuManager.InventoryMenuManager;
+import me.oxolotel.utils.bukkit.menuManager.implement.MenuView;
 import me.oxolotel.utils.bukkit.menuManager.menus.*;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryContent;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryItem;
+import me.oxolotel.utils.general.ReflectionUtils;
+import me.oxolotel.utils.general.TrippleWrapper;
 import me.oxolotel.utils.wrapped.Chat;
 
+import me.oxolotel.utils.wrapped.schedule.Task;
 import me.yl.questsystem.listener.MenuClick;
+import me.yl.questsystem.manager.AnvilMenuManager;
 import me.yl.questsystem.manager.ItemManager;
+import me.yl.questsystem.manager.ProtocolLibReader;
 import me.yl.questsystem.manager.SkullManager;
 import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.quest.Quest;
@@ -18,12 +24,17 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondition, Modifyable, Submenu, CommandModifyable, Loggable {
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
-    private boolean commandCheck;
+public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondition, Modifyable, Submenu, Loggable {
+
     private final InventoryContent content;
     private Player p;
     private final NPC npc;
+    private static HashMap<UUID, List<CustomMenu>> openMenus = new HashMap<>();
 
     public CreateQuestMenu(int size, NPC npc, Player p) {
         super(size);
@@ -32,8 +43,15 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
         this.npc = npc;
     }
 
+
     @Override
     public void onClose(Player player, ItemStack[] itemStacks, CloseReason closeReason) {
+        if (closeReason != CloseReason.CHANGEMENU) {
+            openMenus.remove(p.getUniqueId());
+            new ProtocolLibReader().removeMengeInput(player);
+            new ProtocolLibReader().removePreisInput(player);
+            new MenuClick().removePlayer(p);
+        }
     }
 
     @Override
@@ -41,15 +59,55 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
         p = player;
         content.fill(0,54, new InventoryItem(new ItemManager(Material.GRAY_STAINED_GLASS_PANE).setDisplayName(" ").build(), ()->{}));
         content.addGuiItem(13, new InventoryItem(new ItemManager(Material.DIAMOND_PICKAXE).setDisplayName("Quest erstellen").build(), ()->{}));
+        if (new MenuClick().getItem(player) != null){
+            content.addGuiItem(37, new InventoryItem(new ItemManager(new MenuClick().getItem(player).getType()).setDisplayName(" ").build(), null));
+        }else{
+            content.addGuiItem(37, null);
+        }
+
+
+
         content.addGuiItem(28, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Menge").build(), ()->{
-            commandCheck = false;
-            awaitCommand(player);
+            ItemStack item = null;
+            if (new MenuClick().getItem(player) == null) {
+                item = new ItemManager(Material.BARRIER).setDisplayName(" ").build();
+            }else{
+                item = new ItemManager(new MenuClick().getItem(player).getType()).setDisplayName(" ").build();
+            }
+            saveMenus(player);
+            InventoryMenuManager.getInstance().closeMenu(player, Closeable.CloseReason.CHANGEMENU);
+            new AnvilMenuManager().createAnvilMenu(player, item, "Create Quest Menge");
         }));
         content.addGuiItem(30, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Preis").build(), ()->{
-            commandCheck = true;
-            awaitCommand(player);
+            ItemStack item = new ItemManager(Material.GOLD_INGOT).setDisplayName(" ").build();
+            saveMenus(player);
+            InventoryMenuManager.getInstance().closeMenu(player, Closeable.CloseReason.CHANGEMENU);
+            new AnvilMenuManager().createAnvilMenu(player, item, "Create Quest Preis");
         }));
-        content.addGuiItem(37, null);
+        if (getOpenMenus().containsKey(player.getUniqueId())) {
+            ProtocolLibReader plr = new ProtocolLibReader();
+            if (plr.getMengeInput().containsKey(player.getUniqueId())) {
+                content.addGuiItem(28, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Menge").setLore(plr.getMengeInput().get(player.getUniqueId())).build(), () -> {
+                    ItemStack item = null;
+                    if (new MenuClick().getItem(player) == null) {
+                        item = new ItemManager(Material.BARRIER).setDisplayName(" ").build();
+                    }else{
+                        item = new ItemManager(new MenuClick().getItem(player).getType()).setDisplayName(" ").build();
+                    }
+                    saveMenus(player);
+                    InventoryMenuManager.getInstance().closeMenu(player, Closeable.CloseReason.CHANGEMENU);
+                    new AnvilMenuManager().createAnvilMenu(player, item, "Create Quest Menge");
+                }));
+            }
+            if (plr.getPreisInput().containsKey(player.getUniqueId())) {
+                content.addGuiItem(30, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Preis").setLore(plr.getPreisInput().get(player.getUniqueId())).build(), () -> {
+                    ItemStack item = new ItemManager(Material.GOLD_INGOT).setDisplayName(" ").build();
+                    saveMenus(player);
+                    InventoryMenuManager.getInstance().closeMenu(player, Closeable.CloseReason.CHANGEMENU);
+                    new AnvilMenuManager().createAnvilMenu(player, item, "Create Quest Preis");
+                }));
+            }
+        }
 
         content.addGuiItem(38, new InventoryItem(new SkullManager("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTliZjMyOTJlMTI2YTEwNWI1NGViYTcxM2FhMWIxNTJkNTQxYTFkODkzODgyOWM1NjM2NGQxNzhlZDIyYmYifX19",
                 " ").build(), ()->{}));
@@ -78,69 +136,15 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
 
     @Override
     public boolean isClickAllowed(Player player, int i) {
-        if (i == 37 || i == 41 || i == 28 || i == 30 || i == 43){
+        if (i == 37 || i == 41 || i == 30 || i == 43 || i == 28){
             return true;
         }
         return false;
     }
 
-
-    @Override
-    public String getCommand() {
-        if (commandCheck){
-            return "QuestPreis";
-        }else{
-            return "QuestMenge";
-        }
-    }
-
-    @Override
-    public String getCommandHelp() {
-        if (commandCheck){
-           return  "Gib /QuestPreis <Preis> ein um den Preis festzulegen";
-        }else{
-            return  "Gib /QuestMenge <Menge> ein um die Menge festzulegen";
-        }
-    }
-
-    @Override
-    public void processCommand(String[] strings) {
-        if (commandCheck){
-            if (MenuClick.getItemMap().containsKey(p.getUniqueId())){
-                content.addGuiItem(37,new InventoryItem(new MenuClick().getItem(p),()->{}));
-                new MenuClick().removePlayer(p);
-            }
-            if (new QuestManager().checkSignLorePreis(strings[0])) {
-                strings[0] = strings[0].replace(",", ".");
-                content.addGuiItem(30, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Preis").setLore(strings).build(), () -> {
-                    commandCheck = true;
-                    awaitCommand(p);
-                }));
-            }else {
-                Chat.sendErrorMessage("Questsystem", me.oxolotel.utils.wrapped.player.Player.of(p),
-                        "Yo Du was gibst du da ein bist du dumm das ist doch kein Preis?");
-            }
-        }else{
-            if (MenuClick.getItemMap().containsKey(p.getUniqueId())){
-                content.addGuiItem(37,new InventoryItem(new MenuClick().getItem(p),()->{}));
-                new MenuClick().removePlayer(p);
-            }
-            if (new QuestManager().checkSignLoreMenge(strings[0])) {
-                content.addGuiItem(28, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Menge").setLore(strings).build(), () -> {
-                    commandCheck = false;
-                    awaitCommand(p);
-                }));
-            }else {
-                Chat.sendErrorMessage("Questsystem", me.oxolotel.utils.wrapped.player.Player.of(p),
-                        "Yo Du was gibst du da ein bist du dumm das ist doch keine Menge?");
-            }
-        }
-    }
-
-    public boolean checkQuestInput(){
+    private boolean checkQuestInput(){
         if (new MenuClick().getItem(p) != null) {
             content.addGuiItem(37, new InventoryItem(new MenuClick().getItem(p), () -> {}));
-            new MenuClick().removePlayer(p);
 
             if (content.get(37) != null || content.get(37).getItem().getType() != Material.AIR) {
                 return content.get(28).getItem().getItemMeta().hasLore() && content.get(30).getItem().getItemMeta().hasLore();
@@ -149,5 +153,16 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
         return false;
     }
 
+    private void saveMenus(Player p) {
+        MenuView a = InventoryMenuManager.getInstance().getOpenMenu(p);
+        @SuppressWarnings("unchecked")
+        LinkedList<TrippleWrapper<CustomMenu, InventoryContent, Task>> tempOpenMenus = (LinkedList<TrippleWrapper<CustomMenu, InventoryContent, Task>>) ReflectionUtils.accessField(MenuView.class, a, "openMenus", LinkedList.class);
+        List<CustomMenu> t = tempOpenMenus.stream().map(TrippleWrapper::getValue1).toList();
+        openMenus.put(p.getUniqueId(), t);
+    }
+
+    public static HashMap<UUID, List<CustomMenu>> getOpenMenus() {
+        return openMenus;
+    }
 
 }

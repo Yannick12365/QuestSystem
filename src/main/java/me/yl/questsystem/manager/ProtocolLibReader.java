@@ -14,12 +14,14 @@ import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryContent;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryItem;
 import me.oxolotel.utils.general.ReflectionUtils;
 import me.oxolotel.utils.general.TrippleWrapper;
+import me.oxolotel.utils.wrapped.Chat;
 import me.oxolotel.utils.wrapped.schedule.Task;
 import me.yl.questsystem.main;
 import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.npc.NPCManager;
 import me.yl.questsystem.quest.Quest;
 import me.yl.questsystem.quest.QuestManager;
+import me.yl.questsystem.quest.editMenu.CreateQuestMenu;
 import me.yl.questsystem.quest.editMenu.EditQuestMenu;
 import me.yl.questsystem.quest.editMenu.ReeditQuestMenu;
 import org.bukkit.Bukkit;
@@ -76,6 +78,24 @@ public class ProtocolLibReader {
     }
 
 
+    private static HashMap<UUID,String>mengeInput = new HashMap<>();
+    private static HashMap<UUID,String>preisInput = new HashMap<>();
+
+    public HashMap<UUID, String> getMengeInput() {
+        return mengeInput;
+    }
+
+    public HashMap<UUID, String> getPreisInput() {
+        return preisInput;
+    }
+
+    public void removeMengeInput(Player p){
+        mengeInput.remove(p.getUniqueId());
+    }
+    public void removePreisInput(Player p){
+        preisInput.remove(p.getUniqueId());
+    }
+
     public void readWindowClickPacket(ProtocolManager pm, main main){
         if (pm != null) {
             pm.addPacketListener(new PacketAdapter(main, PacketType.Play.Client.WINDOW_CLICK) {
@@ -95,48 +115,54 @@ public class ProtocolLibReader {
                         PacketContainer packet = event.getPacket();
 
                         if (packet.getIntegers().read(2) == 2) {
-                            boolean menge = false;
-                            ItemStack item = packet.getItemModifier().read(0);
                             String input = packet.getItemModifier().read(0).getItemMeta().getDisplayName();
 
-                            if(p.getOpenInventory().getTitle().equalsIgnoreCase("Edit Quest Menge")){
-                                menge = true;
+                            input = input.replace(" ","");
+                            if(p.getOpenInventory().getTitle().equalsIgnoreCase("Edit Quest Menge") || p.getOpenInventory().getTitle().equalsIgnoreCase("Create Quest Menge")){
+                                if (new QuestManager().checkSignLoreMenge(input)) {
+                                    mengeInput.put(p.getUniqueId(), input);
+                                }else {
+                                    Chat.sendErrorMessage("Questsystem", me.oxolotel.utils.wrapped.player.Player.of(p),
+                                            "Yo Du was gibst du da ein bist du dumm das ist doch keine Menge?");
+                                }
+                            }else{
+                                if (new QuestManager().checkSignLorePreis(input)) {
+                                    input = input.replace(",",".");
+                                    preisInput.put(p.getUniqueId(), input);
+                                }else {
+                                    Chat.sendErrorMessage("Questsystem", me.oxolotel.utils.wrapped.player.Player.of(p),
+                                            "Yo Du was gibst du da ein bist du dumm das ist doch kein Preis?");
+                                }
                             }
+
+                            boolean createEditCheck = false;
+                            if (p.getOpenInventory().getTitle().equalsIgnoreCase("Edit Quest Menge") || p.getOpenInventory().getTitle().equalsIgnoreCase("Edit Quest Preis")){
+                                createEditCheck = true;
+                            }
+
                             PacketContainer container = new PacketContainer(PacketType.Play.Server.CLOSE_WINDOW);
                             try {
                                 pm.sendServerPacket(p, container);
                             } catch (InvocationTargetException e) {
                                 e.printStackTrace();
                             }
-
-                            boolean finalMenge = menge;
+                            p.sendMessage(input);
+                            boolean finalCreateEditCheck = createEditCheck;
                             new BukkitRunnable() {
                                 int counter = 0;
                                 @Override
                                 public void run() {
                                     if (counter == 1){
-
-                                        for (CustomMenu cm : ReeditQuestMenu.getOpenMenus().get(p.getUniqueId())){
+                                        if (finalCreateEditCheck) {
+                                            for (CustomMenu cm : ReeditQuestMenu.getOpenMenus().get(p.getUniqueId())) {
                                                 InventoryMenuManager.getInstance().openMenu(p, cm);
-                                        }
-                                        if (finalMenge) {
-
-                                            InventoryMenuManager.getInstance().getOpenMenu(p).getCurrentInventoryContent().addGuiItem(28, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Menge").setLore((input)).build(), ()->{
-                                                ItemStack tempItem = new ItemManager(item.getType()).setDisplayName(" ").build();
-                                                new ReeditQuestMenu().saveMenus(p);
-                                                InventoryMenuManager.getInstance().closeMenu(p, Closeable.CloseReason.CHANGEMENU);
-                                                new AnvilMenuManager().createAnvilMenu(p ,tempItem,"Edit Quest Menge");
-                                            }));
+                                            }
                                         }else {
-                                            InventoryMenuManager.getInstance().getOpenMenu(p).getCurrentInventoryContent().addGuiItem(30, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Preis").setLore(((input))).build(), ()->{
-                                                ItemStack item = new ItemManager(Material.GOLD_INGOT).setDisplayName(" ").build();
-                                                new ReeditQuestMenu().saveMenus(p);
-                                                InventoryMenuManager.getInstance().closeMenu(p, Closeable.CloseReason.CHANGEMENU);
-                                                new AnvilMenuManager().createAnvilMenu(p ,item,"Edit Quest Preis");
-                                            }));
-
+                                            for (CustomMenu cm : CreateQuestMenu.getOpenMenus().get(p.getUniqueId())) {
+                                                InventoryMenuManager.getInstance().openMenu(p, cm);
+                                            }
                                         }
-                                        InventoryMenuManager.getInstance().getOpenMenu(p).refresh();
+
                                         cancel();
                                     }
                                     counter++;
@@ -149,6 +175,4 @@ public class ProtocolLibReader {
 
         }
     }
-
-
 }

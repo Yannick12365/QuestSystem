@@ -27,8 +27,4 @@ public class MenuClick implements Listener {
     public void removePlayer(Player p){
         itemMap.remove(p.getUniqueId());
     }
-
-    public static HashMap<UUID, ItemStack> getItemMap() {
-        return itemMap;
-    }
 }
