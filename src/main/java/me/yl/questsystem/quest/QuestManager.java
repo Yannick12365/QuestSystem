@@ -4,12 +4,14 @@ import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.npc.NPCManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class QuestManager {
 
 
     private static final HashMap<NPC, ArrayList<Quest>> questList =  new HashMap<>();
+    private static HashMap<NPC, ArrayList<Quest>> weeklyQuestList =  new HashMap<>();
 
     public HashMap<NPC, ArrayList<Quest>> getQuestList() {
         return questList;
@@ -120,5 +122,27 @@ public class QuestManager {
         }
         questList.put(npc, ql);
         new QuestConfigManager().updateQuestConfig(q);
+    }
+
+    public HashMap<NPC, ArrayList<Quest>> chooseWeeklyQuests(){
+        HashMap<NPC, ArrayList<Quest>> weeklyQuests = new HashMap<>();
+        for (NPC n:new NPCManager().getNPClist()) {
+           ArrayList<Quest> temp = questList.get(n);
+           Collections.shuffle(temp);
+           ArrayList<Quest> tempWeekly = new ArrayList();
+            for (int i = 0; i < 5; i++) {
+                tempWeekly.add(i, setAmountDifference(temp.get(i)));
+            }
+            weeklyQuests.put(n, tempWeekly);
+        }
+        return weeklyQuests;
+    }
+    public Quest setAmountDifference(Quest q){
+
+
+        return q;
+    }
+    public static void setWeeklyQuests(HashMap<NPC, ArrayList<Quest>> tempList){
+        weeklyQuestList = tempList;
     }
 }

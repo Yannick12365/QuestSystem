@@ -13,8 +13,12 @@ import me.yl.questsystem.manager.ProtocolLibReader;
 import me.yl.questsystem.npc.NPCConfigManager;
 import me.yl.questsystem.quest.QuestConfigManager;
 
+import me.yl.questsystem.quest.QuestManager;
+import me.yl.questsystem.quest.WeeklyQuestConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.time.LocalDate;
 
 public final class main extends JavaPlugin {
 
@@ -30,15 +34,31 @@ public final class main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new MenuClick(), this);
         Bukkit.getPluginManager().registerEvents(new AnvilMenuManager(),this);
 
-        new NPCConfigManager().createConfigConfiguration(this);
-        new NPCConfigManager().readNPCConfig();
+        NPCConfigManager npcConfigManager = new NPCConfigManager();
+        npcConfigManager.createConfigConfiguration(this);
+        npcConfigManager.readNPCConfig();
 
-        new QuestConfigManager().createConfigConfiguration(this);
-        new QuestConfigManager().readQuestConfig();
+        QuestConfigManager questConfigManager = new QuestConfigManager();
+        questConfigManager.createConfigConfiguration(this);
+        questConfigManager.readQuestConfig();
+
+
+        WeeklyQuestConfigManager weeklyQuestConfigManager = new WeeklyQuestConfigManager();
+        weeklyQuestConfigManager.createConfigConfiguration(this);
+        if (LocalDate.now().getDayOfWeek().getValue() == 4){
+            weeklyQuestConfigManager.clearWeeklyQuesttConfig();
+            weeklyQuestConfigManager.writeWeeklyQuesttConfig();
+        }
+        weeklyQuestConfigManager.readWeeklyQuestConfig();
 
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-        new ProtocolLibReader().readNPCClickPacket(protocolManager, this);
-        new ProtocolLibReader().readWindowClickPacket(protocolManager, this);
+        ProtocolLibReader protocolLibReader = new ProtocolLibReader();
+        protocolLibReader.readNPCClickPacket(protocolManager, this);
+        protocolLibReader.readWindowClickPacket(protocolManager, this);
+
+
+
+
     }
 
     @Override
