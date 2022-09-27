@@ -10,6 +10,7 @@ import me.yl.questsystem.listener.MenuClick;
 import me.yl.questsystem.listener.PlayerJoin;
 import me.yl.questsystem.manager.AnvilMenuManager;
 import me.yl.questsystem.manager.ProtocolLibReader;
+import me.yl.questsystem.manager.SettingsConfigManager;
 import me.yl.questsystem.npc.NPCConfigManager;
 import me.yl.questsystem.quest.QuestConfigManager;
 
@@ -38,9 +39,13 @@ public final class main extends JavaPlugin {
         npcConfigManager.createConfigConfiguration(this);
         npcConfigManager.readNPCConfig();
 
+        SettingsConfigManager settingsConfigManager = new SettingsConfigManager();
+        settingsConfigManager.createConfigConfiguration(this);
+        settingsConfigManager.writeQuestPacketNumber(0);
+
         QuestConfigManager questConfigManager = new QuestConfigManager();
         questConfigManager.createConfigConfiguration(this);
-        questConfigManager.readQuestConfig();
+        questConfigManager.readQuestConfig(settingsConfigManager.readQuestPacketNumber());
 
 
         WeeklyQuestConfigManager weeklyQuestConfigManager = new WeeklyQuestConfigManager();
@@ -55,10 +60,6 @@ public final class main extends JavaPlugin {
         ProtocolLibReader protocolLibReader = new ProtocolLibReader();
         protocolLibReader.readNPCClickPacket(protocolManager, this);
         protocolLibReader.readWindowClickPacket(protocolManager, this);
-
-
-
-
     }
 
     @Override

@@ -25,12 +25,14 @@ public class DeleteQuestMenu extends CustomMenu implements SlotCondition, Closea
 
     private Quest q;
     private NPC npc;
+    private int questPacket;
 
-    public DeleteQuestMenu(int size, Quest q, NPC npc) {
+    public DeleteQuestMenu(int size, Quest q, NPC npc,int nr) {
         super(size);
         setTitle("Löschen bestätigen");
         this.npc = npc;
         this.q = q;
+        questPacket = nr;
     }
 
     @Override
@@ -48,10 +50,10 @@ public class DeleteQuestMenu extends CustomMenu implements SlotCondition, Closea
             InventoryMenuManager.getInstance().getOpenMenu(p).refresh();
         },Material.RED_BANNER, "§c§lAbbrechen");
         c.addGuiItem(42, ()->{
-            new QuestManager().removeQuest(q, npc);
+            new QuestManager().removeQuest(q, npc, questPacket);
             Chat.sendSuccessMessage(main.PREFIX, me.oxolotel.utils.wrapped.player.Player.of(p),"§c§lQuest erfolgreich gelöscht!");
             InventoryMenuManager.getInstance().closeMenu(p);
-            InventoryMenuManager.getInstance().openMenu(p, new EditQuestMenu(new QuestManager().getEditQuestGUISize(npc), npc));
+            InventoryMenuManager.getInstance().openMenu(p, new EditQuestMenu(new QuestManager().getEditQuestGUISize(npc, questPacket), npc, questPacket));
         } ,Material.GREEN_BANNER, "§a§lQuest löschen Bestätigen");
 
         return c;

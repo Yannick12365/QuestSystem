@@ -24,6 +24,7 @@ import me.yl.questsystem.quest.QuestManager;
 import me.yl.questsystem.quest.editMenu.CreateQuestMenu;
 import me.yl.questsystem.quest.editMenu.EditQuestMenu;
 import me.yl.questsystem.quest.editMenu.ReeditQuestMenu;
+import me.yl.questsystem.quest.editMenu.SelectQuestPacketMenu;
 import me.yl.questsystem.quest.playerMenu.NPCQuestMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -59,10 +60,8 @@ public class ProtocolLibReader {
                                         @Override
                                         public void run() {
                                             if (counter == 1){
-                                               // int countSlots = new QuestManager().getEditQuestGUISize(npc);
-
-                                               // InventoryMenuManager.getInstance().openMenu(event.getPlayer(), new EditQuestMenu(countSlots, npc));
-                                                InventoryMenuManager.getInstance().openMenu(event.getPlayer(), new NPCQuestMenu(54, npc));
+                                                InventoryMenuManager.getInstance().openMenu(event.getPlayer(), new SelectQuestPacketMenu(54, npc));
+                                                //InventoryMenuManager.getInstance().openMenu(event.getPlayer(), new NPCQuestMenu(54, npc));
                                                 cancel();
                                             }
                                             counter++;
@@ -70,7 +69,6 @@ public class ProtocolLibReader {
                                     }.runTaskTimer(main, 0, 1);
                                 }
                             }catch (IllegalArgumentException exception){
-                                event.getPlayer().sendMessage("Left Click");
                             }
                         }
                     }

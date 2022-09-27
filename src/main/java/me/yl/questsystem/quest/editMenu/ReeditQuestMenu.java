@@ -38,15 +38,16 @@ public class ReeditQuestMenu extends CustomMenu implements Closeable, SlotCondit
     private NPC npc;
     private Quest quest;
     private static HashMap<UUID, List<CustomMenu>> openMenus = new HashMap<>();
+    private int questPacket;
 
 
-    public ReeditQuestMenu(int size, NPC npc, Quest quest) {
+    public ReeditQuestMenu(int size, NPC npc, Quest quest, int nr) {
         super(size);
         setTitle("Quest bearbeiten");
         content = new InventoryContent();
         this.npc = npc;
         this.quest = quest;
-
+        questPacket = nr;
     }
 
     @Override
@@ -111,7 +112,7 @@ public class ReeditQuestMenu extends CustomMenu implements Closeable, SlotCondit
         }));
         content.addGuiItem(43, new InventoryItem(new ItemManager(Material.GREEN_BANNER).setDisplayName("Speichern").build(), () -> {
 
-            new QuestManager().changeQuestAmounts(npc, quest, Integer.parseInt(content.get(28).getItem().getItemMeta().getLore().get(0)), Double.parseDouble(content.get(30).getItem().getItemMeta().getLore().get(0)));
+            new QuestManager().changeQuestAmounts(npc, quest, Integer.parseInt(content.get(28).getItem().getItemMeta().getLore().get(0)), Double.parseDouble(content.get(30).getItem().getItemMeta().getLore().get(0)), questPacket);
             Chat.sendSuccessMessage(main.PREFIX, me.oxolotel.utils.wrapped.player.Player.of(p), "§cQuest erfolgreich bearbeitet");
             InventoryMenuManager.getInstance().closeMenu(player, CloseReason.RETRUNPREVIOUS);
             InventoryMenuManager.getInstance().getOpenMenu(player).refresh();

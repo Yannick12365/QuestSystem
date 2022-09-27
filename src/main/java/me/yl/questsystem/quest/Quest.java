@@ -18,16 +18,17 @@ public class Quest {
         this.itemAmount = itemAmount;
         this.reward = reward;
         this.npc = npc;
-        questID = new QuestManager().getQuestList().get(npc).get(new QuestManager().getQuestList().get(npc).size()-1).questID+1;
+        questID = new QuestManager().getLatestQuestID(npc)+1;
         this.active = true;
     }
 
-    public Quest(ItemStack item, int itemAmount, double reward, NPC npc, int questID, boolean active){
+
+    public Quest(ItemStack item, int itemAmount, double reward, NPC npc, int id, boolean active){
         this.item = item;
         this.itemAmount = itemAmount;
         this.reward = reward;
         this.npc = npc;
-        this.questID = questID;
+        this.questID = id;
         this.active = active;
     }
 

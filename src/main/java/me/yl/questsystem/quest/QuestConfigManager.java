@@ -1,6 +1,7 @@
 package me.yl.questsystem.quest;
 
 import me.yl.questsystem.main;
+import me.yl.questsystem.manager.SettingsConfigManager;
 import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.npc.NPCManager;
 
@@ -16,22 +17,27 @@ import java.util.Objects;
 import java.util.Set;
 
 public class QuestConfigManager {
-    public static File questFile;
-    public static FileConfiguration questFileConf;
+
+    private static ArrayList<File> questFile = new ArrayList<>();
+
+    private static ArrayList<FileConfiguration> questFileConf = new ArrayList<>();
 
     public void createConfigConfiguration(main main){
         if (!main.getDataFolder().exists()){
             main.getDataFolder().mkdir();
         }
-        questFile = new File(main.getDataFolder(), "quest.yml");
-        if (!questFile.exists()){
-            main.saveResource("quest.yml",false);
+
+        for (int i = 0;i<3;i++) {
+            questFile.add(new File(main.getDataFolder(), "quest"+i+".yml"));
+            if (!questFile.get(i).exists()) {
+                main.saveResource("quest"+i+".yml", false);
+            }
+            questFileConf.add(YamlConfiguration.loadConfiguration(questFile.get(i)));
         }
-        questFileConf = YamlConfiguration.loadConfiguration(questFile);
     }
 
-    public void readQuestConfig(){
-        Set<String> keyList =  questFileConf.getKeys(false);
+    public void readQuestConfig(int nr){
+        Set<String> keyList =  questFileConf.get(nr).getKeys(false);
         ArrayList<Quest> questArrayList = new ArrayList<>();
 
         for (String key:keyList){
@@ -41,57 +47,77 @@ public class QuestConfigManager {
                 return;
             }
 
-            for (String subkey: Objects.requireNonNull(questFileConf.getConfigurationSection(key)).getKeys(false)) {
-                ItemStack item = new ItemStack(Objects.requireNonNull(Material.getMaterial(Objects.requireNonNull(questFileConf.getString(key + "." + subkey + ".Item")))));
-                int itemAmount = questFileConf.getInt(key+"."+subkey +".ItemAmount");
-                double reward = questFileConf.getDouble(key+"."+subkey+ ".Reward");
+            for (String subkey: Objects.requireNonNull(questFileConf.get(nr).getConfigurationSection(key)).getKeys(false)) {
+                ItemStack item = new ItemStack(Objects.requireNonNull(Material.getMaterial(Objects.requireNonNull(questFileConf.get(nr).getString(key + "." + subkey + ".Item")))));
+                int itemAmount = questFileConf.get(nr).getInt(key+"."+subkey +".ItemAmount");
+                double reward = questFileConf.get(nr).getDouble(key+"."+subkey+ ".Reward");
                 int questid = Integer.parseInt(subkey);
-                boolean active = questFileConf.getBoolean(key + "." +subkey +".Active");
+                boolean active = questFileConf.get(nr).getBoolean(key + "." +subkey +".Active");
 
                 questArrayList.add(new Quest(item,itemAmount,reward, npcFound,questid, active));
             }
-            new QuestManager().getQuestList().put(npcFound, questArrayList);
+            new QuestManager().getActiveQuestPacket().put(npcFound, questArrayList);
         }
     }
 
-    public void writeQuesttConfig(Quest q){
-        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Item",q.getItem().getType().toString());
-        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".ItemAmount",q.getItemAmount());
-        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Reward",q.getReward());
-        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Active",q.getActive());
+    public ArrayList<Quest> readNPCQuestsFromPacket(NPC npc, int nr){
+        ArrayList<Quest> tmpList = new ArrayList<>();
+        try {
+            for (String subkey : Objects.requireNonNull(questFileConf.get(nr).getConfigurationSection(npc.getName())).getKeys(false)) {
+                ItemStack item = new ItemStack(Objects.requireNonNull(Material.getMaterial(Objects.requireNonNull(questFileConf.get(nr).getString(npc.getName() + "." + subkey + ".Item")))));
+                int itemAmount = questFileConf.get(nr).getInt(npc.getName() + "." + subkey + ".ItemAmount");
+                double reward = questFileConf.get(nr).getDouble(npc.getName() + "." + subkey + ".Reward");
+                int questid = Integer.parseInt(subkey);
+                boolean active = questFileConf.get(nr).getBoolean(npc.getName() + "." + subkey + ".Active");
+
+                tmpList.add(new Quest(item, itemAmount, reward, npc, questid, active));
+            }
+        }catch (Exception e){
+            return null;
+        }
+        return tmpList;
+    }
+
+    public void writeQuesttConfig(Quest q, int nr){
+        questFileConf.get(nr).set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Item",q.getItem().getType().toString());
+        questFileConf.get(nr).set(q.getNpc().getName()+"."+ q.getQuestID()+ ".ItemAmount",q.getItemAmount());
+        questFileConf.get(nr).set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Reward",q.getReward());
+        questFileConf.get(nr).set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Active",q.getActive());
 
         try {
-            questFileConf.save(questFile);
-            ArrayList<Quest> ql = new QuestManager().getNPCQuests(q.getNpc().getName());
+            questFileConf.get(nr).save(questFile.get(nr));
+            ArrayList<Quest> ql = new QuestManager2().getNPCQuests(q.getNpc().getName());
             ql.add(q);
-            new QuestManager().getQuestList().put(q.getNpc(), ql);
+            if (nr == new SettingsConfigManager().readQuestPacketNumber()) {
+                QuestManager.getActiveQuestPacket().put(q.getNpc(), ql);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-    public void updateActiveQuestConfig(Quest q){
-        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Active",q.getActive());
+    public void updateActiveQuestConfig(Quest q, int nr){
+        questFileConf.get(nr).set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Active",q.getActive());
         try {
-            questFileConf.save(questFile);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void removeQuestConfig(Quest q){
-        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID(), null);
-        try {
-            questFileConf.save(questFile);
+            questFileConf.get(nr).save(questFile.get(nr));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void updateQuestConfig(Quest q){
-        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".ItemAmount",q.getItemAmount());
-        questFileConf.set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Reward",q.getReward());
+    public void removeQuestConfig(Quest q, int nr){
+        questFileConf.get(nr).set(q.getNpc().getName()+"."+ q.getQuestID(), null);
         try {
-            questFileConf.save(questFile);
+            questFileConf.get(nr).save(questFile.get(nr));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void updateQuestConfig(Quest q, int nr){
+        questFileConf.get(nr).set(q.getNpc().getName()+"."+ q.getQuestID()+ ".ItemAmount",q.getItemAmount());
+        questFileConf.get(nr).set(q.getNpc().getName()+"."+ q.getQuestID()+ ".Reward",q.getReward());
+        try {
+            questFileConf.get(nr).save(questFile.get(nr));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

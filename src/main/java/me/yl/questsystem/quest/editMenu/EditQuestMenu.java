@@ -23,13 +23,15 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
     private static int guiSize;
     private final ArrayList<Integer> createSlotList;
     private Player p;
+    private int questPacket;
 
-    public EditQuestMenu(int size, NPC npc) {
+    public EditQuestMenu(int size, NPC npc, int packetNR) {
         super(size);
         guiSize = size;
         this.npc = npc;
         setTitle("Edit Quest");
         createSlotList = new ArrayList<>();
+        questPacket = packetNR;
     }
 
     @Override
@@ -39,8 +41,8 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
         c.fill(0,guiSize, new InventoryItem(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), ()->{}));
         int slots = 0;
         int questIDCount = 0;
-        int questCount = new QuestManager().countNPCQuests(npc.getName());
-        ArrayList<Quest> questLists = new QuestManager().getNPCQuests(npc.getName());
+        int questCount = new QuestManager().countNPCQuests(npc.getName(), questPacket);
+        ArrayList<Quest> questLists = new QuestManager().getNPCQuestsFromPacket(npc,questPacket);
 
         ItemStack erstellItem = new ItemManager(Material.DIAMOND_PICKAXE).setDisplayName("Quest erstellen").build();
         ItemStack closeItem = new ItemManager(Material.BARRIER).setDisplayName("Menü verlassen").build();
@@ -48,7 +50,10 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
         createSlotList.add(40);
         c.addGuiItem(40, new InventoryItem(erstellItem, () -> {}));
 
-        c.addGuiItem(42, new InventoryItem(closeItem, () -> {InventoryMenuManager.getInstance().closeMenu(player);}));
+        c.addGuiItem(42, new InventoryItem(closeItem, () -> {
+            InventoryMenuManager.getInstance().closeMenu(player);
+            InventoryMenuManager.getInstance().openMenu(player, new SelectQuestPacketMenu(54, npc));
+        }));
 
         if (!(questCount == 0 || questLists.size() == 0)) {
 
@@ -86,7 +91,7 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
 
 
                 c.addGuiItem(counterSlot, new InventoryItem(questItem, ()-> {InventoryMenuManager.getInstance().openMenu(p,
-                        new EditSingleQuestMenu(54, quest.getQuestID(), npc));}) );
+                        new EditSingleQuestMenu(54, quest.getQuestID(), npc, questPacket));}) );
 
                 counterSlot++;
                 counterInv++;
@@ -107,7 +112,7 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
     @Override
     public CustomMenu getSubmenu(int i) {
         if(createSlotList.contains(i)){
-            return new CreateQuestMenu(54, npc, p);
+            return new CreateQuestMenu(54, npc, p, questPacket);
         }
        return null;
     }

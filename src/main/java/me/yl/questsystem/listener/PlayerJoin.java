@@ -1,6 +1,5 @@
 package me.yl.questsystem.listener;
 
-import me.yl.questsystem.manager.PacketReader;
 import me.yl.questsystem.npc.NPCManager;
 
 import org.bukkit.event.EventHandler;

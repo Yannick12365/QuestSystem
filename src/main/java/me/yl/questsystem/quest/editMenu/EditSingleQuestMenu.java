@@ -23,26 +23,29 @@ public class EditSingleQuestMenu extends CustomMenu implements Closeable, SlotCo
     private InventoryContent content;
     private NPC npc;
 
-    public EditSingleQuestMenu(int size, int questID, NPC npc) {
+    private int questPacket;
+
+    public EditSingleQuestMenu(int size, int questID, NPC npc, int nr) {
         super(size);
         this.questID = questID;
         this.n = npc.getName();
         setTitle("Quest verwalten");
         content = new InventoryContent();
         this.npc = npc;
+        questPacket = nr;
     }
 
     @Override
     public InventoryContent getContents(Player player) {
 
         content.fill(0, 54, new InventoryItem(new ItemManager(Material.GRAY_STAINED_GLASS_PANE).build(), ()-> {}));
-        if (new QuestManager().getNPCQuestByID(n, questID).getActive()) {
+        if (new QuestManager().getNPCQuestByID(n, questID, questPacket).getActive()) {
             content.addGuiItem(37, new InventoryItem(new ItemManager(Material.REDSTONE_TORCH).setDisplayName("§c§lAktiv").build(), () -> {changeActive(player);}));
         }else {
             content.addGuiItem(37, new InventoryItem(new ItemManager(Material.LEVER).setDisplayName("§7§lInaktiv").build(), () -> {changeActive(player);}));
         }
 
-        Quest quest = new QuestManager().getNPCQuestByID(npc.getName(), questID);
+        Quest quest = new QuestManager().getNPCQuestByID(npc.getName(), questID, questPacket);
         ArrayList<String> lore = new ArrayList<>();
         lore.add("Gib "+quest.getItemAmount()+" "+quest.getItem().toString()+ "ab und erhalte "+quest.getReward());
         ItemStack questItem = new ItemManager(Material.BOOK).setDisplayName("Quest").setLore(lore).build();
@@ -51,7 +54,7 @@ public class EditSingleQuestMenu extends CustomMenu implements Closeable, SlotCo
         content.addGuiItem(39, ()->{},Material.BLUE_DYE, "§9§lBearbeiten");
         content.addGuiItem(41, ()->{},Material.RED_DYE, "§4§lLöschen");
         content.addGuiItem(43, ()->{
-            InventoryMenuManager.getInstance().openMenu(player, new EditQuestMenu(new QuestManager().getEditQuestGUISize(npc), npc));},
+            InventoryMenuManager.getInstance().openMenu(player, new EditQuestMenu(new QuestManager().getEditQuestGUISize(npc, questPacket), npc, questPacket));},
                 Material.BARRIER, "§c§lZurück");
         return content;
     }
@@ -62,7 +65,7 @@ public class EditSingleQuestMenu extends CustomMenu implements Closeable, SlotCo
     }
 
     private void changeActive(Player p){
-        new QuestManager().changeActiveStatus(!content.get(37).getItem().getType().equals(Material.REDSTONE_TORCH), n,questID);
+        new QuestManager().changeActiveStatus(!content.get(37).getItem().getType().equals(Material.REDSTONE_TORCH), n,questID, questPacket);
         InventoryMenuManager.getInstance().getOpenMenu(p).refresh();
     }
 
@@ -81,9 +84,9 @@ public class EditSingleQuestMenu extends CustomMenu implements Closeable, SlotCo
     public CustomMenu getSubmenu(int slot) {
 
         if(slot == 41){
-            return new DeleteQuestMenu(54, new QuestManager().getNPCQuestByID(n, questID), npc);
+            return new DeleteQuestMenu(54, new QuestManager().getNPCQuestByID(n, questID, questPacket), npc, questPacket);
         } else if (slot == 39) {
-            return new ReeditQuestMenu(54, npc, new QuestManager().getNPCQuestByID(npc.getName(),questID));
+            return new ReeditQuestMenu(54, npc, new QuestManager().getNPCQuestByID(npc.getName(),questID, questPacket), questPacket);
         }
         return null;
     }

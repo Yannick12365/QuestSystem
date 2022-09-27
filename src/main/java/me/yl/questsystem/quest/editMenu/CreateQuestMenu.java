@@ -11,10 +11,7 @@ import me.oxolotel.utils.wrapped.Chat;
 
 import me.oxolotel.utils.wrapped.schedule.Task;
 import me.yl.questsystem.listener.MenuClick;
-import me.yl.questsystem.manager.AnvilMenuManager;
-import me.yl.questsystem.manager.ItemManager;
-import me.yl.questsystem.manager.ProtocolLibReader;
-import me.yl.questsystem.manager.SkullManager;
+import me.yl.questsystem.manager.*;
 import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.quest.Quest;
 import me.yl.questsystem.quest.QuestConfigManager;
@@ -35,12 +32,14 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
     private Player p;
     private final NPC npc;
     private static HashMap<UUID, List<CustomMenu>> openMenus = new HashMap<>();
+    private int questPacket;
 
-    public CreateQuestMenu(int size, NPC npc, Player p) {
+    public CreateQuestMenu(int size, NPC npc, Player p, int nr) {
         super(size);
         setTitle("Create Quest");
         content = new InventoryContent();
         this.npc = npc;
+        questPacket = nr;
     }
 
 
@@ -119,15 +118,13 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
             if(checkQuestInput()){
                 int menge = Integer.parseInt(content.get(28).getItem().getItemMeta().getLore().get(0));
                 double preis = Double.parseDouble(content.get(30).getItem().getItemMeta().getLore().get(0));
-                Quest q;
-                if (new QuestManager().getQuestList().get(npc) == null || new QuestManager().getQuestList().get(npc).size() == 0){
-                    q = new Quest(content.get(37).getItem(), menge, preis, npc, 1, true);
-                }else {
-                    q = new Quest(content.get(37).getItem(), menge, preis, npc);
-                }
-                    new QuestConfigManager().writeQuesttConfig(q);
-                    InventoryMenuManager.getInstance().closeMenu(player, CloseReason.RETRUNPREVIOUS);
-                    InventoryMenuManager.getInstance().getOpenMenu(player).refresh();
+                Quest q = null;
+
+                q = new Quest(content.get(37).getItem(), menge, preis, npc);
+
+                new QuestConfigManager().writeQuesttConfig(q, questPacket);
+                InventoryMenuManager.getInstance().closeMenu(player, CloseReason.RETRUNPREVIOUS);
+                InventoryMenuManager.getInstance().getOpenMenu(player).refresh();
             }
         }));
 

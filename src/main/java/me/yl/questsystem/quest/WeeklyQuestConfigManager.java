@@ -1,6 +1,7 @@
 package me.yl.questsystem.quest;
 
 import me.yl.questsystem.main;
+import me.yl.questsystem.manager.SettingsConfigManager;
 import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.npc.NPCManager;
 import org.bukkit.Material;
@@ -31,14 +32,13 @@ public class WeeklyQuestConfigManager {
         questFileConf = YamlConfiguration.loadConfiguration(questFile);
     }
 
-
     public void readWeeklyQuestConfig(){
         Set<String> keyList =  questFileConf.getKeys(false);
         HashMap<NPC, ArrayList<Quest>> weeklyQuests = new HashMap<>();
         for (String key:keyList) {
             ArrayList<Quest> questList = new ArrayList<>();
             for (int i = 0; i < 5; i++) {
-              Quest q = new QuestManager().getNPCQuestByID(key,(int) questFileConf.get(key+".quest" + i + ".id"));
+              Quest q = new QuestManager().getNPCQuestByID(key,(int) questFileConf.get(key+".quest" + i + ".id"), new SettingsConfigManager().readQuestPacketNumber());
               q.setItemAmount( (int) questFileConf.get(key+".quest" + i + ".amount"));
               questList.add(q);
             }
