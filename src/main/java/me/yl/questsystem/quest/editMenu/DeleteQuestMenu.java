@@ -51,7 +51,7 @@ public class DeleteQuestMenu extends CustomMenu implements SlotCondition, Closea
         },Material.RED_BANNER, "§c§lAbbrechen");
         c.addGuiItem(42, ()->{
             new QuestManager().removeQuest(q, npc, questPacket);
-            Chat.sendSuccessMessage(main.PREFIX, me.oxolotel.utils.wrapped.player.Player.of(p),"§c§lQuest erfolgreich gelöscht!");
+            p.sendMessage("§c§lQuest erfolgreich gelöscht!");
             InventoryMenuManager.getInstance().closeMenu(p);
             InventoryMenuManager.getInstance().openMenu(p, new EditQuestMenu(new QuestManager().getEditQuestGUISize(npc, questPacket), npc, questPacket));
         } ,Material.GREEN_BANNER, "§a§lQuest löschen Bestätigen");

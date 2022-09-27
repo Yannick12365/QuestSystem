@@ -44,7 +44,7 @@ public class NPCQuestMenu extends CustomMenu implements Closeable, SlotCondition
         }));
         content.fill(20, 25, new InventoryItem(new ItemManager(Material.RED_CONCRETE).build(), ()->{}));
         content.addGuiItem(37, new InventoryItem(new ItemManager(Material.GLOWSTONE_DUST).build(), ()->{}));
-        content.addGuiItem(43, ()-> {}, Material.BARRIER);
+        content.addGuiItem(43, ()-> {InventoryMenuManager.getInstance().closeMenu(player);}, Material.BARRIER);
         return content;
     }
 

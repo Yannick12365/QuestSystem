@@ -36,7 +36,14 @@ public class QuestConfigManager {
         }
     }
 
-    public void readQuestConfig(int nr){
+    public void readQuestConfig(int i){
+        int nr;
+        if (new SettingsConfigManager().readQuestPacketNumberQuest() == i){
+            nr = i;
+        }else {
+            nr = new SettingsConfigManager().readQuestPacketNumberQuest();
+        }
+
         Set<String> keyList =  questFileConf.get(nr).getKeys(false);
         ArrayList<Quest> questArrayList = new ArrayList<>();
 
@@ -56,7 +63,8 @@ public class QuestConfigManager {
 
                 questArrayList.add(new Quest(item,itemAmount,reward, npcFound,questid, active));
             }
-            new QuestManager().getActiveQuestPacket().put(npcFound, questArrayList);
+
+            QuestManager.getActiveQuestPacket().put(npcFound, questArrayList);
         }
     }
 
@@ -86,9 +94,10 @@ public class QuestConfigManager {
 
         try {
             questFileConf.get(nr).save(questFile.get(nr));
-            ArrayList<Quest> ql = new QuestManager2().getNPCQuests(q.getNpc().getName());
-            ql.add(q);
+
             if (nr == new SettingsConfigManager().readQuestPacketNumber()) {
+                ArrayList<Quest> ql = new QuestManager().getNPCQuests(q.getNpc().getName(), nr);
+                ql.add(q);
                 QuestManager.getActiveQuestPacket().put(q.getNpc(), ql);
             }
         } catch (IOException e) {

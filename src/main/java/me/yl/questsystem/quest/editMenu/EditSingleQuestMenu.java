@@ -54,8 +54,8 @@ public class EditSingleQuestMenu extends CustomMenu implements Closeable, SlotCo
         content.addGuiItem(39, ()->{},Material.BLUE_DYE, "§9§lBearbeiten");
         content.addGuiItem(41, ()->{},Material.RED_DYE, "§4§lLöschen");
         content.addGuiItem(43, ()->{
-            InventoryMenuManager.getInstance().openMenu(player, new EditQuestMenu(new QuestManager().getEditQuestGUISize(npc, questPacket), npc, questPacket));},
-                Material.BARRIER, "§c§lZurück");
+            InventoryMenuManager.getInstance().openMenu(player, new EditQuestMenu(new QuestManager().getEditQuestGUISize(npc, questPacket), npc, questPacket));
+            }, Material.BARRIER, "§c§lZurück");
         return content;
     }
 

@@ -20,6 +20,7 @@ public class SelectQuestPacketMenu extends CustomMenu implements Closeable, Slot
     public SelectQuestPacketMenu(int size, NPC npc) {
         super(size);
         this.npc = npc;
+        setTitle("Packet auswählen");
     }
 
     @Override
@@ -45,7 +46,7 @@ public class SelectQuestPacketMenu extends CustomMenu implements Closeable, Slot
             InventoryMenuManager.getInstance().openMenu(player, new EditQuestMenu(countSlots, npc, 2));
         }));
         c.addGuiItem(53,new InventoryItem(new ItemManager(Material.BARRIER).setDisplayName("Schließen").build(),()->{
-            InventoryMenuManager.getInstance().closeMenu(player);
+            InventoryMenuManager.getInstance().closeMenu(player, CloseReason.OTHER);
         }));
 
         return c;
@@ -53,6 +54,6 @@ public class SelectQuestPacketMenu extends CustomMenu implements Closeable, Slot
 
     @Override
     public boolean isClickAllowed(Player player, int i) {
-        return i == 20 || i == 22 || i == 24;
+        return i == 20 || i == 22 || i == 24 || i == 53;
     }
 }

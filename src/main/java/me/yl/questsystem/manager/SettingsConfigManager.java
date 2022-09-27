@@ -34,4 +34,17 @@ public class SettingsConfigManager {
     public int readQuestPacketNumber(){
         return (Integer) settingsFileConf.get("QuestPacketNr");
     }
+
+    public void writePacketNrWeeklyQuest(int i){
+        settingsFileConf.set("WeeklyQuestPacketNr", i);
+        try {
+            settingsFileConf.save(settingsFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int readQuestPacketNumberQuest(){
+        return (Integer) settingsFileConf.get("WeeklyQuestPacketNr");
+    }
 }

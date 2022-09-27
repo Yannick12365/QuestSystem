@@ -152,19 +152,27 @@ public class QuestManager {
         return 0;
     }
 
+
+
+
+
+
     public HashMap<NPC, ArrayList<Quest>> chooseWeeklyQuests(){
         HashMap<NPC, ArrayList<Quest>> weeklyQuests = new HashMap<>();
         for (NPC n:new NPCManager().getNPClist()) {
             ArrayList<Quest> temp = activeQuestPacket.get(n);
-            Collections.shuffle(temp);
-            ArrayList<Quest> tempWeekly = new ArrayList();
-            for (int i = 0; i < 5; i++) {
-                tempWeekly.add(i, setAmountDifference(temp.get(i)));
+            if (temp != null) {
+                Collections.shuffle(temp);
+                ArrayList<Quest> tempWeekly = new ArrayList();
+                for (int i = 0; i < 5; i++) {
+                    tempWeekly.add(i, setAmountDifference(temp.get(i)));
+                }
+                weeklyQuests.put(n, tempWeekly);
             }
-            weeklyQuests.put(n, tempWeekly);
         }
         return weeklyQuests;
     }
+
     public Quest setAmountDifference(Quest q){
 
 

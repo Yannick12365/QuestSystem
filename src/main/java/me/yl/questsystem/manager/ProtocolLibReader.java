@@ -60,8 +60,7 @@ public class ProtocolLibReader {
                                         @Override
                                         public void run() {
                                             if (counter == 1){
-                                                InventoryMenuManager.getInstance().openMenu(event.getPlayer(), new SelectQuestPacketMenu(54, npc));
-                                                //InventoryMenuManager.getInstance().openMenu(event.getPlayer(), new NPCQuestMenu(54, npc));
+                                                InventoryMenuManager.getInstance().openMenu(event.getPlayer(), new NPCQuestMenu(54, npc, new SettingsConfigManager().readQuestPacketNumber()));
                                                 cancel();
                                             }
                                             counter++;

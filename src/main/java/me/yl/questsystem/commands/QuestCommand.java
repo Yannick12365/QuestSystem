@@ -2,8 +2,10 @@ package me.yl.questsystem.commands;
 
 import me.oxolotel.utils.bukkit.menuManager.InventoryMenuManager;
 import me.yl.questsystem.manager.ChatManager;
+import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.npc.NPCManager;
 
+import me.yl.questsystem.quest.editMenu.SelectQuestPacketMenu;
 import me.yl.questsystem.quest.playerMenu.NPCQuestMenu;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,20 +20,25 @@ public class QuestCommand implements CommandExecutor {
             return true;
         }
         Player player = (Player)sender;
-        NPCManager npc = new NPCManager();
+        NPCManager npcm = new NPCManager();
 
         if (args.length > 0){
             if (args[0].equalsIgnoreCase("help") && args.length == 1){
                 helpText(player);
+            } else if (args[0].equalsIgnoreCase("edit") && args.length == 2) {
+                NPC npc = npcm.checkForNPC(args[1]);
+                if(npc != null){
+                    InventoryMenuManager.getInstance().openMenu(player, new SelectQuestPacketMenu(54, npc));
+                }
             } else if (args[0].equalsIgnoreCase("npc") && args.length > 1) {
                 if (args[1].equalsIgnoreCase("create") && args.length == 3) {
-                    npc.createNPC(player, args[2]);
+                    npcm.createNPC(player, args[2]);
                 } else if (args[1].equalsIgnoreCase("remove") && args.length == 3) {
-                    npc.removeNPC(player, args[2]);
+                    npcm.removeNPC(player, args[2]);
                 }else if (args[1].equalsIgnoreCase("tphere") && args.length == 3) {
-                    npc.tpNPC(player, args[2]);
+                    npcm.tpNPC(player, args[2]);
                 }else if (args[1].equalsIgnoreCase("skin") && args.length == 4) {
-                    npc.changeNPCSkin(player, args[2], args[3]);
+                    npcm.changeNPCSkin(player, args[2], args[3]);
                 }
             }
         }else {

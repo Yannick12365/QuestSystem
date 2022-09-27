@@ -51,7 +51,7 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
         c.addGuiItem(40, new InventoryItem(erstellItem, () -> {}));
 
         c.addGuiItem(42, new InventoryItem(closeItem, () -> {
-            InventoryMenuManager.getInstance().closeMenu(player);
+            InventoryMenuManager.getInstance().closeMenu(player, CloseReason.CHANGEMENU);
             InventoryMenuManager.getInstance().openMenu(player, new SelectQuestPacketMenu(54, npc));
         }));
 

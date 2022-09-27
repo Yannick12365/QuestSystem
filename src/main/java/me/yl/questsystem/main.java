@@ -35,23 +35,24 @@ public final class main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new MenuClick(), this);
         Bukkit.getPluginManager().registerEvents(new AnvilMenuManager(),this);
 
+        WeeklyQuestConfigManager weeklyQuestConfigManager = new WeeklyQuestConfigManager();
+        weeklyQuestConfigManager.createConfigConfiguration(this);
+
         NPCConfigManager npcConfigManager = new NPCConfigManager();
         npcConfigManager.createConfigConfiguration(this);
-        npcConfigManager.readNPCConfig();
 
         SettingsConfigManager settingsConfigManager = new SettingsConfigManager();
         settingsConfigManager.createConfigConfiguration(this);
-        settingsConfigManager.writeQuestPacketNumber(0);
 
         QuestConfigManager questConfigManager = new QuestConfigManager();
         questConfigManager.createConfigConfiguration(this);
+        settingsConfigManager.writeQuestPacketNumber(0);
+        npcConfigManager.readNPCConfig();
         questConfigManager.readQuestConfig(settingsConfigManager.readQuestPacketNumber());
 
-
-        WeeklyQuestConfigManager weeklyQuestConfigManager = new WeeklyQuestConfigManager();
-        weeklyQuestConfigManager.createConfigConfiguration(this);
-        if (LocalDate.now().getDayOfWeek().getValue() == 4){
+        if (LocalDate.now().getDayOfWeek().getValue() == 2){
             weeklyQuestConfigManager.clearWeeklyQuesttConfig();
+            settingsConfigManager.writeQuestPacketNumber(settingsConfigManager.readQuestPacketNumber());
             weeklyQuestConfigManager.writeWeeklyQuesttConfig();
         }
         weeklyQuestConfigManager.readWeeklyQuestConfig();

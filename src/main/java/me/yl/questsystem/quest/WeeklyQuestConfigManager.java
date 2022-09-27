@@ -51,11 +51,13 @@ public class WeeklyQuestConfigManager {
         HashMap<NPC, ArrayList<Quest>> weeklyQuests = new QuestManager().chooseWeeklyQuests();
         for (NPC n:new NPCManager().getNPClist()) {
             ArrayList<Quest> temp = weeklyQuests.get(n);
-            int counter = 0;
-            for (Quest q:temp) {
-                questFileConf.set(n.getName() + ".quest"+ counter + ".id", q.getQuestID());
-                questFileConf.set(n.getName() + ".quest"+ counter+ ".amount", q.getItemAmount());
-                counter++;
+            if (temp != null) {
+                int counter = 0;
+                for (Quest q : temp) {
+                    questFileConf.set(n.getName() + ".quest" + counter + ".id", q.getQuestID());
+                    questFileConf.set(n.getName() + ".quest" + counter + ".amount", q.getItemAmount());
+                    counter++;
+                }
             }
         }
         try {
