@@ -37,7 +37,7 @@ public class NPCManager {
 
     public void createNPC(Player p, String n) {
         NPC npcFound = checkForNPC(n);
-        if (npcFound != null) {
+        if (npcFound == null) {
             DedicatedServer server = ((CraftServer) Bukkit.getServer()).getServer();
 
             WorldServer world = ((CraftWorld) Objects.requireNonNull(Bukkit.getWorld(p.getWorld().getName()))).getHandle();
