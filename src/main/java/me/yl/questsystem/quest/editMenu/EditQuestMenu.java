@@ -63,7 +63,10 @@ public class EditQuestMenu extends CustomMenu implements Closeable, Subdevideabl
                 questIDCount += 21;
                 createSlotList.add(slots-14 +9);
                 c.addGuiItem(slots - 14 + 9, new InventoryItem(erstellItem, () -> {}));
-                c.addGuiItem(slots - 12 + 9, new InventoryItem(closeItem, () -> {InventoryMenuManager.getInstance().closeMenu(player);}));
+                c.addGuiItem(slots - 12 + 9, new InventoryItem(closeItem, () -> {
+                    InventoryMenuManager.getInstance().closeMenu(player);
+                    InventoryMenuManager.getInstance().openMenu(player, new SelectQuestPacketMenu(54, npc));
+                }));
             }
         }
        return c;

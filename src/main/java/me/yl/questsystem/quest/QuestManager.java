@@ -3,6 +3,7 @@ package me.yl.questsystem.quest;
 import me.yl.questsystem.manager.SettingsConfigManager;
 import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.npc.NPCManager;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,9 +66,19 @@ public class QuestManager {
         return new ArrayList<Quest>();
     }
 
-    public void changeActiveStatus(boolean active, String n, int questID, int nr){
+    public void changeActiveStatus(boolean active, String n, int questID, int nr, Player p){
         Quest q = getNPCQuestByID(n, questID, nr);
         NPC npcFound = new NPCManager().checkForNPC(n);
+
+        ArrayList<Integer>tmp = new WeeklyQuestConfigManager().getIDsFromNPCsWeeklys(npcFound);
+        if (tmp != null) {
+            for (int id : tmp) {
+                if (id == q.getQuestID()) {
+                    p.sendMessage("Diese Quest kann nicht deaktiviert werden, da sie in der momentanen Woche, als Quest angeboten wird!");
+                    return;
+                }
+            }
+        }
 
         ArrayList<Quest> ql = new ArrayList<>();
 
@@ -86,12 +97,21 @@ public class QuestManager {
         new QuestConfigManager().updateActiveQuestConfig(q, nr);
     }
 
-    public void removeQuest(Quest q, NPC npc, int nr){
+    public void removeQuest(Quest q, NPC npc, int nr, Player p){
+        ArrayList<Integer>tmp = new WeeklyQuestConfigManager().getIDsFromNPCsWeeklys(npc);
+        if (tmp != null) {
+            for (int id : tmp) {
+                if (id == q.getQuestID()) {
+                    p.sendMessage("Diese Quest kann nicht gelöscht werden, da sie in der momentanen Woche, als Quest angeboten wird!");
+                    return;
+                }
+            }
+        }
         if (nr == new SettingsConfigManager().readQuestPacketNumber()) {
             activeQuestPacket.get(npc).remove(q);
         }
         new QuestConfigManager().removeQuestConfig(q, nr);
-
+        p.sendMessage("§c§lQuest erfolgreich gelöscht!");
     }
 
     public void changeQuestAmounts(NPC npc, Quest q, int amount, double reward, int nr){
@@ -160,12 +180,20 @@ public class QuestManager {
     public HashMap<NPC, ArrayList<Quest>> chooseWeeklyQuests(){
         HashMap<NPC, ArrayList<Quest>> weeklyQuests = new HashMap<>();
         for (NPC n:new NPCManager().getNPClist()) {
+            if (!new QuestManager().checkForFiveActiveQuests(n)){
+                continue;
+            }
             ArrayList<Quest> temp = activeQuestPacket.get(n);
+
             if (temp != null) {
                 Collections.shuffle(temp);
                 ArrayList<Quest> tempWeekly = new ArrayList();
                 for (int i = 0; i < 5; i++) {
-                    tempWeekly.add(i, setAmountDifference(temp.get(i)));
+                    if (!temp.get(i).getActive()){
+                        i--;
+                        continue;
+                    }
+                    tempWeekly.add(setAmountDifference(temp.get(i)));
                 }
                 weeklyQuests.put(n, tempWeekly);
             }
@@ -180,5 +208,19 @@ public class QuestManager {
     }
     public static void setWeeklyQuests(HashMap<NPC, ArrayList<Quest>> tempList){
         weeklyQuestList = tempList;
+    }
+
+    public boolean checkForFiveActiveQuests(NPC npc){
+        ArrayList<Quest> tmp = activeQuestPacket.get(npc);
+        int counter = 0;
+        for (Quest q : tmp){
+            if (q.getActive()){
+                counter++;
+                if (counter == 5){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

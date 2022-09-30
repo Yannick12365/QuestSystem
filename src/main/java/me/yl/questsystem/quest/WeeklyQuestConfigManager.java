@@ -77,4 +77,18 @@ public class WeeklyQuestConfigManager {
             e.printStackTrace();
         }
     }
+
+    public ArrayList<Integer> getIDsFromNPCsWeeklys(NPC npc){
+        ArrayList<Integer>tmp = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            try {
+                tmp.add((int) questFileConf.get(npc.getName() + ".quest" + i + ".id"));
+            }catch (Exception e){
+                return null;
+            }
+        }
+        return tmp;
+    }
+
+
 }

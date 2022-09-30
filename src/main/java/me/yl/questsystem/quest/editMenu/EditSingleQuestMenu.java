@@ -65,7 +65,7 @@ public class EditSingleQuestMenu extends CustomMenu implements Closeable, SlotCo
     }
 
     private void changeActive(Player p){
-        new QuestManager().changeActiveStatus(!content.get(37).getItem().getType().equals(Material.REDSTONE_TORCH), n,questID, questPacket);
+        new QuestManager().changeActiveStatus(!content.get(37).getItem().getType().equals(Material.REDSTONE_TORCH), n,questID, questPacket, p);
         InventoryMenuManager.getInstance().getOpenMenu(p).refresh();
     }
 

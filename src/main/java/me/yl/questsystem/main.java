@@ -50,7 +50,7 @@ public final class main extends JavaPlugin {
         npcConfigManager.readNPCConfig();
         questConfigManager.readQuestConfig(settingsConfigManager.readQuestPacketNumber());
 
-        if (LocalDate.now().getDayOfWeek().getValue() == 2){
+        if (LocalDate.now().getDayOfWeek().getValue() == 5){
             weeklyQuestConfigManager.clearWeeklyQuesttConfig();
             settingsConfigManager.writeQuestPacketNumber(settingsConfigManager.readQuestPacketNumber());
             weeklyQuestConfigManager.writeWeeklyQuesttConfig();
