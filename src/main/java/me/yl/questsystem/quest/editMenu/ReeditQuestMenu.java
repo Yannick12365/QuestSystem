@@ -68,13 +68,13 @@ public class ReeditQuestMenu extends CustomMenu implements Closeable, SlotCondit
         content.addGuiItem(13, () -> {
         }, Material.BLUE_DYE, "§9§lBearbeiten");
 
-        content.addGuiItem(28, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Menge").setLore(String.valueOf(quest.getItemAmount())).build(), () -> {
+        content.addGuiItem(28, new InventoryItem(new ItemManager(Material.ANVIL).setDisplayName("Item Menge").setLore(String.valueOf(quest.getItemAmount())).build(), () -> {
                 ItemStack item = new ItemManager(quest.getItem().getType()).setDisplayName(" ").build();
                 saveMenus(player);
                 InventoryMenuManager.getInstance().closeMenu(player, Closeable.CloseReason.CHANGEMENU);
                 new AnvilMenuManager().createAnvilMenu(player, item, "Edit Quest Menge");
             }));
-            content.addGuiItem(30, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Preis").setLore(String.valueOf(quest.getReward())).build(), () -> {
+            content.addGuiItem(30, new InventoryItem(new ItemManager(Material.ANVIL).setDisplayName("Item Preis").setLore(String.valueOf(quest.getReward())).build(), () -> {
                 ItemStack item = new ItemManager(Material.GOLD_INGOT).setDisplayName(" ").build();
                 saveMenus(player);
                 InventoryMenuManager.getInstance().closeMenu(player, Closeable.CloseReason.CHANGEMENU);
@@ -84,7 +84,7 @@ public class ReeditQuestMenu extends CustomMenu implements Closeable, SlotCondit
         if (getOpenMenus().containsKey(player.getUniqueId())) {
             ProtocolLibReader plr = new ProtocolLibReader();
             if (plr.getMengeInput().containsKey(player.getUniqueId())) {
-                content.addGuiItem(28, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Menge").setLore(plr.getMengeInput().get(player.getUniqueId())).build(), () -> {
+                content.addGuiItem(28, new InventoryItem(new ItemManager(Material.ANVIL).setDisplayName("Item Menge").setLore(plr.getMengeInput().get(player.getUniqueId())).build(), () -> {
                     ItemStack item = new ItemManager(quest.getItem().getType()).setDisplayName(" ").build();
                     saveMenus(player);
                     InventoryMenuManager.getInstance().closeMenu(player, Closeable.CloseReason.CHANGEMENU);
@@ -92,7 +92,7 @@ public class ReeditQuestMenu extends CustomMenu implements Closeable, SlotCondit
                 }));
             }
             if (plr.getPreisInput().containsKey(player.getUniqueId())) {
-                content.addGuiItem(30, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Preis").setLore(plr.getPreisInput().get(player.getUniqueId())).build(), () -> {
+                content.addGuiItem(30, new InventoryItem(new ItemManager(Material.ANVIL).setDisplayName("Item Preis").setLore(plr.getPreisInput().get(player.getUniqueId())).build(), () -> {
                     ItemStack item = new ItemManager(Material.GOLD_INGOT).setDisplayName(" ").build();
                     saveMenus(player);
                     InventoryMenuManager.getInstance().closeMenu(player, Closeable.CloseReason.CHANGEMENU);

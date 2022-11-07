@@ -5,6 +5,7 @@ import me.yl.questsystem.manager.ChatManager;
 import me.yl.questsystem.npc.NPC;
 import me.yl.questsystem.npc.NPCManager;
 
+import me.yl.questsystem.npc.NPCMenu;
 import me.yl.questsystem.quest.editMenu.SelectQuestPacketMenu;
 import me.yl.questsystem.quest.playerMenu.NPCQuestMenu;
 import org.bukkit.command.Command;
@@ -28,7 +29,7 @@ public class QuestCommand implements CommandExecutor {
             } else if (args[0].equalsIgnoreCase("edit") && args.length == 2) {
                 NPC npc = npcm.checkForNPC(args[1]);
                 if(npc != null){
-                    InventoryMenuManager.getInstance().openMenu(player, new SelectQuestPacketMenu(54, npc));
+                    InventoryMenuManager.getInstance().openMenu(player, new NPCMenu(54, npc));
                 }
             } else if (args[0].equalsIgnoreCase("npc") && args.length > 1) {
                 if (args[1].equalsIgnoreCase("create") && args.length == 3) {

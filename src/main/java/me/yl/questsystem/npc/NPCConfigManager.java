@@ -38,6 +38,9 @@ public class NPCConfigManager {
             npcFileConf.set(npc.getName()+".World",npc.getWorld().getWorld().getName());
             npcFileConf.set(npc.getName() + ".SkinValue", "Kein Skin");
             npcFileConf.set(npc.getName() + ".SkinSignature", "Kein Skin");
+            npcFileConf.set(npc.getName()+ ".Anmerkungen", npc.getAnmerkungen());
+            npcFileConf.set(npc.getName()+ ".Status", npc.isStatus());
+            npcFileConf.set(npc.getName()+ ".WochenBonus", npc.isWochenBonus());
         }else if(skin[0].equals("tp") && skin[1].equals("tp")){
             npcFileConf.set(npc.getName()+".X",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getX()));
             npcFileConf.set(npc.getName()+".Y",Double.toString(npc.getEntityplayer().getBukkitEntity().getLocation().getY()));
@@ -73,15 +76,35 @@ public class NPCConfigManager {
                 npcData.put("World", npcFileConf.getString(npcPlayer + ".World"));
                 npcData.put("SkinValue", npcFileConf.getString(npcPlayer + ".SkinValue"));
                 npcData.put("SkinSignature", npcFileConf.getString(npcPlayer + ".SkinSignature"));
+                npcData.put("Anmerkungen", npcFileConf.getString(npcPlayer + ".Anmerkungen"));
+                npcData.put("Status", npcFileConf.getString(npcPlayer + ".Status"));
+                npcData.put("WochenBonus", npcFileConf.getString(npcPlayer + ".WochenBonus"));
 
                 new NPCManager().createAfterRestart(npcData);
-
             }
         }
     }
 
     public void deleteNPCInConfig(String n){
         npcFileConf.set(n,null);
+        try {
+            npcFileConf.save(npcFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void changeNPCStatusInConfig(String n, boolean status){
+        npcFileConf.set(n+ ".Status", status);
+        try {
+            npcFileConf.save(npcFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void changeNPCWochenbonusInConfig(String n, boolean status){
+        npcFileConf.set(n+ ".Status", status);
         try {
             npcFileConf.save(npcFile);
         } catch (IOException e) {

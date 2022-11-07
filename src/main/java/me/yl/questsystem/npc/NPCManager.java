@@ -46,7 +46,7 @@ public class NPCManager {
             EntityPlayer entityPlayer = new EntityPlayer(server, world, gameProfile, null);
             entityPlayer.b(p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
 
-            NPC npc = new NPC(entityPlayer, gameProfile, world, n);
+            NPC npc = new NPC(entityPlayer, gameProfile, world, n,true, true, "Neue Quests immer am Montag um 05:00 Uhr");
 
             sentNPCPacket(npc.getEntityplayer());
             NPCList.add(npc);
@@ -174,11 +174,14 @@ public class NPCManager {
         DedicatedServer server = ((CraftServer) Bukkit.getServer()).getServer();
         WorldServer world = ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle();
         GameProfile gameProfile = new GameProfile(UUID.fromString(npcData.get("UUID")), npcData.get("Name"));
+        Boolean status = Boolean.parseBoolean(npcData.get("Status"));
+        Boolean wochenbonus = Boolean.parseBoolean(npcData.get("WochenBonus"));
+        String anmerkungen = npcData.get("Anmerkungen");
 
         EntityPlayer entityPlayer = new EntityPlayer(server, world, gameProfile, null);
         entityPlayer.b(Double.parseDouble(npcData.get("X")), Double.parseDouble(npcData.get("Y")), Double.parseDouble(npcData.get("Z")), Float.parseFloat(npcData.get("Yaw")), Float.parseFloat(npcData.get("Pitch")));
 
-        NPC npc = new NPC(entityPlayer, gameProfile, world, name);
+        NPC npc = new NPC(entityPlayer, gameProfile, world, name, status, wochenbonus, anmerkungen);
 
         if (!(npcData.get("SkinValue").equals("create") && (npcData.get("SkinSignature")).equals("create")) || !(npcData.get("SkinValue").equals("tp") && (npcData.get("SkinSignature")).equals("tp"))) {
             npc.getGameProfile().getProperties().put("textures", new Property("textures", npcData.get("SkinValue"), npcData.get("SkinSignature")));
@@ -193,5 +196,23 @@ public class NPCManager {
             }
         }
         return null;
+    }
+
+    public void changeNPCStatus(NPC npc, boolean status){
+        for (NPC npcFound: NPCList) {
+            if (npc == npcFound){
+                npcFound.setStatus(status);
+                new NPCConfigManager().changeNPCStatusInConfig(npc.getName(),status);
+            }
+        }
+    }
+
+    public void changeNPCWochenbonus(NPC npc, boolean status){
+        for (NPC npcFound: NPCList) {
+            if (npc == npcFound){
+                npcFound.setWochenBonus(status);
+                new NPCConfigManager().changeNPCWochenbonusInConfig(npc.getName(),status);
+            }
+        }
     }
 }

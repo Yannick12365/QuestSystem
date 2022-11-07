@@ -66,7 +66,7 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
 
 
 
-        content.addGuiItem(28, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Menge").build(), ()->{
+        content.addGuiItem(28, new InventoryItem(new ItemManager(Material.ANVIL).setDisplayName("Item Menge").build(), ()->{
             ItemStack item = null;
             if (new MenuClick().getItem(player) == null) {
                 item = new ItemManager(Material.BARRIER).setDisplayName(" ").build();
@@ -77,7 +77,7 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
             InventoryMenuManager.getInstance().closeMenu(player, Closeable.CloseReason.CHANGEMENU);
             new AnvilMenuManager().createAnvilMenu(player, item, "Create Quest Menge");
         }));
-        content.addGuiItem(30, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Preis").build(), ()->{
+        content.addGuiItem(30, new InventoryItem(new ItemManager(Material.ANVIL).setDisplayName("Item Preis").build(), ()->{
             ItemStack item = new ItemManager(Material.GOLD_INGOT).setDisplayName(" ").build();
             saveMenus(player);
             InventoryMenuManager.getInstance().closeMenu(player, Closeable.CloseReason.CHANGEMENU);
@@ -86,7 +86,7 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
         if (getOpenMenus().containsKey(player.getUniqueId())) {
             ProtocolLibReader plr = new ProtocolLibReader();
             if (plr.getMengeInput().containsKey(player.getUniqueId())) {
-                content.addGuiItem(28, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Menge").setLore(plr.getMengeInput().get(player.getUniqueId())).build(), () -> {
+                content.addGuiItem(28, new InventoryItem(new ItemManager(Material.ANVIL).setDisplayName("Item Menge").setLore(plr.getMengeInput().get(player.getUniqueId())).build(), () -> {
                     ItemStack item = null;
                     if (new MenuClick().getItem(player) == null) {
                         item = new ItemManager(Material.BARRIER).setDisplayName(" ").build();
@@ -99,7 +99,7 @@ public class CreateQuestMenu extends CustomMenu implements Closeable, SlotCondit
                 }));
             }
             if (plr.getPreisInput().containsKey(player.getUniqueId())) {
-                content.addGuiItem(30, new InventoryItem(new ItemManager(Material.OAK_SIGN).setDisplayName("Item Preis").setLore(plr.getPreisInput().get(player.getUniqueId())).build(), () -> {
+                content.addGuiItem(30, new InventoryItem(new ItemManager(Material.ANVIL).setDisplayName("Item Preis").setLore(plr.getPreisInput().get(player.getUniqueId())).build(), () -> {
                     ItemStack item = new ItemManager(Material.GOLD_INGOT).setDisplayName(" ").build();
                     saveMenus(player);
                     InventoryMenuManager.getInstance().closeMenu(player, Closeable.CloseReason.CHANGEMENU);
